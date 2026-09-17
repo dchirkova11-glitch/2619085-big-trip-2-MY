@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Дарья Чиркова](https://up.htmlacademy.ru/ecmascript-individual/2/user/2619085).
-* Наставник: [Виктория Никитина].
+* Наставник: [Виктория Никитина](https://htmlacademy.ru/profile/id1217273).
 
 ---
 
