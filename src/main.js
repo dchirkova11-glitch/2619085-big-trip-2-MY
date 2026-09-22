@@ -1,11 +1,11 @@
-import TripPresenter from './presenter/trip-presenter.js';
+import TripPresenter from './presenters/trip-presenter.js';
 
-const siteHeaderElement = document.querySelector('.trip-controls__filters');
-const siteMainElement = document.querySelector('.trip-events');
+const headerFiltersElement = document.querySelector('.trip-controls__filters');
+const mainEventsElement = document.querySelector('.trip-events');
 
 const tripPresenter = new TripPresenter({
-  tripContainer: siteMainElement,
-  filterContainer: siteHeaderElement
+  tripContainer: mainEventsElement,
+  filterContainer: headerFiltersElement
 });
 
 tripPresenter.init();

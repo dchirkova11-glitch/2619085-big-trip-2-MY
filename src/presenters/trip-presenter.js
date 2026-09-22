@@ -1,8 +1,9 @@
 import { render } from '../render.js';
-import RoutePointView from '../view/route-point-view.js';
-import EditingFormView from '../view/editing-form-view.js';
-import FilterView from '../view/filter-view.js';
-import SortView from '../view/sorting-view.js';
+import PointView from '../views/point-view.js';
+import EditingFormView from '../views/editing-form-view.js';
+import FilterView from '../views/filter-view.js';
+import SortView from '../views/sorting-view.js';
+import ListView from '../views/list-view.js';
 
 export default class TripPresenter {
   constructor({ tripContainer, filterContainer }) {
@@ -17,11 +18,14 @@ export default class TripPresenter {
     const sortComponent = new SortView();
     render(sortComponent, this.tripContainer);
 
+    const listComponent = new ListView;
+    render(listComponent, this.tripContainer);
+
     const editingFormComponent = new EditingFormView();
-    render(editingFormComponent, this.tripContainer);
+    render(editingFormComponent, listComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new RoutePointView(), this.tripContainer);
+      render(new PointView(), listComponent.getElement());
     }
   }
 
