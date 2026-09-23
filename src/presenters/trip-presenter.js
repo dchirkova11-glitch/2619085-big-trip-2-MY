@@ -1,32 +1,33 @@
 import { render } from '../render.js';
 import PointView from '../views/point-view.js';
-import EditingFormView from '../views/editing-form-view.js';
+import EditFormView from '../views/edit-form-view.js';
 import FilterView from '../views/filter-view.js';
 import SortView from '../views/sorting-view.js';
 import ListView from '../views/list-view.js';
 
 export default class TripPresenter {
-  constructor({ tripContainer, filterContainer }) {
+  listComponent = new ListView();
+
+  constructor({ tripContainer, filterContainer, pointsModel }) {
     this.tripContainer = tripContainer;
     this.filterContainer = filterContainer;
+    this.pointsModel = pointsModel;
   }
 
   init() {
-    const filterComponent = new FilterView();
-    render(filterComponent, this.filterContainer);
 
-    const sortComponent = new SortView();
-    render(sortComponent, this.tripContainer);
+    this.tripPoints = [...this.pointsModel.getPoints()];
 
-    const listComponent = new ListView;
-    render(listComponent, this.tripContainer);
+    render(new FilterView(), this.filterContainer);
+    render(new SortView(), this.tripContainer);
+    render(this.listComponent, this.tripContainer);
+    render(new EditFormView({ point: this.tripPoints[0] }), this.listComponent.getElement());
 
-    const editingFormComponent = new EditingFormView();
-    render(editingFormComponent, listComponent.getElement());
-
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(), listComponent.getElement());
+    for (let i = 1; i < this.tripPoints.length; i++) {
+      render(
+        new PointView({ point: this.tripPoints[i] }),
+        this.listComponent.getElement()
+      );
     }
   }
-
 }
