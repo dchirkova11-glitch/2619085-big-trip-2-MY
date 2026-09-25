@@ -3,7 +3,7 @@ import { offersMock } from '../mock/offers-mock.js';
 export default class OffersModel {
   #offers = null;
 
-  internalIP() {
+  init() {
     this.#offers = [...offersMock];
   }
 

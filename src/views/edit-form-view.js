@@ -1,6 +1,7 @@
 import { createElement } from '../render.js';
 import { formDate } from '../utils.js';
-import { mockOffers, mockDestinations } from '../const.js';
+import { offersMock } from '../mock/offers-mock.js';
+import { destinationsMock } from '../mock/destinations-mock.js';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -57,12 +58,12 @@ const createDestinationTemplate = (destination) => {
 const createEditFormTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers } = point;
 
-  const typeOffers = mockOffers.find((offer) => offer.type === type);
+  const typeOffers = offersMock.find((offer) => offer.type === type);
   const offersTemplate = typeOffers && typeOffers.offers.length > 0
     ? createOffersTemplate(typeOffers.offers, offers)
     : '';
 
-  const pointDestination = mockDestinations.find((dest) => dest.id === destination);
+  const pointDestination = destinationsMock.find((dest) => dest.id === destination);
   const destinationTemplate = createDestinationTemplate(pointDestination);
 
   const dateTimeStart = formDate(dateFrom);

@@ -18,9 +18,7 @@ export const pointsMock = [
     dateTo: '2019-07-11T11:22:13.375Z',
     destination: 'd-2',
     isFavorite: true,
-    offers: [
-      ''
-    ],
+    offers: [],
     type: 'bus'
   },
   {

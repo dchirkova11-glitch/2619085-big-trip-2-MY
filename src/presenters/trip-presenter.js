@@ -8,15 +8,17 @@ import ListView from '../views/list-view.js';
 export default class TripPresenter {
   listComponent = new ListView();
 
-  constructor({ tripContainer, filterContainer, pointsModel }) {
+  constructor({ tripContainer, filterContainer, pointsModel, offersModel, destinationsModel }) {
     this.tripContainer = tripContainer;
     this.filterContainer = filterContainer;
     this.pointsModel = pointsModel;
+    this.offersModel = offersModel;
+    this.destinationsModel = destinationsModel;
   }
 
   init() {
 
-    this.tripPoints = [...this.pointsModel.getPoints()];
+    this.tripPoints = [...this.pointsModel.points];
 
     render(new FilterView(), this.filterContainer);
     render(new SortView(), this.tripContainer);

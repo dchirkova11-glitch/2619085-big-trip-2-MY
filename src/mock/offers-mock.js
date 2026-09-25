@@ -47,5 +47,20 @@ export const offersMock = [
   {
     type: 'check-in',
     offers: []
+  },
+  {
+    type: 'bus',
+    offers: [
+      {
+        id: 'of-7',
+        title: 'Order bus',
+        price: 70
+      },
+      {
+        id: 'of-8',
+        title: 'Upgrade to business bus',
+        price: 80
+      }
+    ]
   }
 ];

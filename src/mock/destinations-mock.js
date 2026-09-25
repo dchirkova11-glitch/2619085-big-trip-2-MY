@@ -5,11 +5,11 @@ export const destinationsMock = [
     name: 'Paris',
     pictures: [
       {
-        src: '/photos/1.jpg',
+        src: '/img/photos/1.jpg',
         description: 'Paris mountains'
       },
       {
-        src: '/photos/5.jpg',
+        src: '/img/photos/5.jpg',
         description: 'Paris parliament building'
       },
     ]
@@ -20,7 +20,7 @@ export const destinationsMock = [
     name: 'Amsterdam',
     pictures: [
       {
-        src: '/photos/2.jpg',
+        src: '/img/photos/2.jpg',
         description: 'Amsterdam canals'
       }
     ]
@@ -31,11 +31,11 @@ export const destinationsMock = [
     name: 'Geneva',
     pictures: [
       {
-        src: '/photos/3.jpg',
+        src: '/img/photos/3.jpg',
         description: 'Geneva lake'
       },
       {
-        src: '/photos/4.jpg',
+        src: '/img/photos/4.jpg',
         description: 'Geneva cool'
       },
     ]

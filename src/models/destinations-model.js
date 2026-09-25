@@ -3,7 +3,7 @@ import { destinationsMock } from '../mock/destinations-mock';
 export default class DestinationsModel {
   #destinations = null;
 
-  internalIP() {
+  init() {
     this.#destinations = [...destinationsMock];
   }
 
