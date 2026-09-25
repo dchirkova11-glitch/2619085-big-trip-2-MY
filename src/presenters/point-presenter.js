@@ -16,8 +16,11 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
+    const destination = this.#destinationsModel.getById(this.#point.destination);
+    const typeOffers = this.#offersModel.getByType(this.#point.type);
+
     render(
-      new PointView({ point: this.#point }),
+      new PointView({ point: this.#point, destination, typeOffers }),
       this.#listContainer
     );
 
