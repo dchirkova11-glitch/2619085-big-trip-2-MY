@@ -16,3 +16,5 @@ export const getPointDuration = (dateFrom, dateTo) => {
     ? `${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`
     : `${minutes}M`;
 };
+
+export const capitalize = (word) => word[0].toUpperCase() + word.slice(1);
