@@ -121,8 +121,8 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
               ${offersTemplate}
             </div>
           </section>
-${destinationTemplate}
-
+        ${destinationTemplate}
+        </section>
       </form>
       `);
 };

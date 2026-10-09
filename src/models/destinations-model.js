@@ -1,4 +1,4 @@
-import { destinationsMock } from '../mock/destinations-mock';
+import { destinationsMock } from '../mock/destinations-mock.js';
 
 export default class DestinationsModel {
   #destinations = null;
@@ -14,5 +14,4 @@ export default class DestinationsModel {
   getById(id) {
     return this.#destinations.find((destination) => destination.id === id);
   }
-
 }
