@@ -139,9 +139,15 @@ export default class FormView extends AbstractView {
     this.#destination = destination;
     this.#typeOffers = typeOffers;
     this.#destinations = destinations;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
     return createFormTemplate(this.#point, this.#destination, this.#typeOffers, this.#destinations);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    console.log('отправка формы');
+  };
 }
