@@ -132,14 +132,21 @@ export default class FormView extends AbstractView {
   #destination = null;
   #typeOffers = null;
   #destinations = null;
+  #handleFormSubmit = null;
+  #handleRollupClick = null;
 
-  constructor({ point = BLANK_POINT, destination, typeOffers, destinations }) {
+  constructor({ point = BLANK_POINT, destination, typeOffers, destinations, onFormSubmit, onRollupClick }) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#typeOffers = typeOffers;
     this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleRollupClick = onRollupClick;
     this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#rollupClickHandler);
   }
 
   get template() {
@@ -148,6 +155,11 @@ export default class FormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    console.log('отправка формы');
+    this.#handleFormSubmit();
+  };
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleRollupClick();
   };
 }

@@ -1,4 +1,4 @@
-import { render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 import FormView from '../views/form-view.js';
 import PointView from '../views/point-view.js';
 
@@ -7,6 +7,8 @@ export default class PointPresenter {
   #offersModel = null;
   #destinationsModel = null;
   #point = null;
+  #pointComponent = null;
+  #formComponent = null;
 
   constructor({ listContainer, offersModel, destinationsModel }) {
     this.#listContainer = listContainer;
@@ -19,19 +21,30 @@ export default class PointPresenter {
 
     const destination = this.#destinationsModel.getById(this.#point.destination);
     const typeOffers = this.#offersModel.getByType(this.#point.type);
-    const pointComponent = new PointView({
-      point: this.#point,
-      destination,
-      typeOffers
-    });
-
-    const formComponent = new FormView({
+    this.#pointComponent = new PointView({
       point: this.#point,
       destination,
       typeOffers,
-      destinations: this.#destinationsModel.destinations
+      onEditClick: () => this.#replacePointToForm()
     });
 
-    render(pointComponent, this.#listContainer);
+    this.#formComponent = new FormView({
+      point: this.#point,
+      destination,
+      typeOffers,
+      destinations: this.#destinationsModel.destinations,
+      onFormSubmit: () => this.#replaceFormToPoint(),
+      onRollupClick: () => this.#replaceFormToPoint()
+    });
+
+    render(this.#pointComponent, this.#listContainer);
+  }
+
+  #replacePointToForm() {
+    replace(this.#formComponent, this.#pointComponent);
+  }
+
+  #replaceFormToPoint() {
+    replace(this.#pointComponent, this.#formComponent);
   }
 }
