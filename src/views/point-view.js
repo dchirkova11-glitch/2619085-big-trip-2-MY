@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { pointDate, pointTime, getPointDuration } from '../utils.js';
 
 const createTemplate = (point, destination, typeOffers) => {
@@ -12,7 +12,7 @@ const createTemplate = (point, destination, typeOffers) => {
   const duration = getPointDuration(dateFrom, dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
-  return `
+  return (`
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">${dateResult}</time>
@@ -50,32 +50,22 @@ const createTemplate = (point, destination, typeOffers) => {
       </button>
     </div>
   </li>
- `;
+ `);
 };
 
-export default class PointView {
+export default class PointView extends AbstractView {
   #point = null;
   #destination = null;
   #typeOffers = null;
 
   constructor({ point, destination, typeOffers }) {
+    super();
     this.#point = point;
     this.#destination = destination;
     this.#typeOffers = typeOffers;
   }
 
-  getTemplate() {
+  get template() {
     return createTemplate(this.#point, this.#destination, this.#typeOffers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

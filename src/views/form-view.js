@@ -1,5 +1,5 @@
 import { BLANK_POINT, POINT_TYPES } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { capitalize, formDate } from '../utils.js';
 
 const createOffersTemplate = (offers, selectedOffers) => (
@@ -7,7 +7,7 @@ const createOffersTemplate = (offers, selectedOffers) => (
 
     const isChecked = selectedOffers.includes(offer.id) ? 'checked' : '';
 
-    return `
+    return (`
       <div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isChecked}>
         <label class="event__offer-label" for="event-offer-${offer.id}">
@@ -16,7 +16,7 @@ const createOffersTemplate = (offers, selectedOffers) => (
           <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>
-    `;
+    `);
   }).join('')
 );
 
@@ -35,11 +35,11 @@ const createDestinationTemplate = (destination) => {
     : '';
 
   return description || pictures.length > 0
-    ? `<section class="event__section  event__section--destination">
+    ? (`<section class="event__section  event__section--destination">
          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
          <p class="event__destination-description">${description}</p>
          ${picturesTemplate}
-       </section>`
+       </section>`)
     : '';
 };
 
@@ -55,7 +55,7 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
   const dateTimeStart = formDate(dateFrom);
   const dateTimeEnd = formDate(dateTo);
 
-  return `
+  return (`
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -124,16 +124,17 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
 ${destinationTemplate}
 
       </form>
-      `;
+      `);
 };
 
-export default class FormView {
+export default class FormView extends AbstractView {
   #point = null;
   #destination = null;
   #typeOffers = null;
   #destinations = null;
 
   constructor({ point = BLANK_POINT, destination, typeOffers, destinations }) {
+    super();
     this.#point = point;
     this.#destination = destination;
     this.#typeOffers = typeOffers;
@@ -141,18 +142,7 @@ export default class FormView {
 
   }
 
-  getTemplate() {
+  get template() {
     return createFormTemplate(this.#point, this.#destination, this.#typeOffers, this.#destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

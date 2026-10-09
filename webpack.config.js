@@ -35,6 +35,10 @@ module.exports = {
           },
         },
       },
-    ]
+      {
+        test: /\.css$/i,
+        use: ['sryle-loader', 'css-loader']
+      },
+    ],
   },
 };
