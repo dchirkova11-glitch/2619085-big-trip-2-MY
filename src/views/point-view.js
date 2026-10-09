@@ -1,8 +1,10 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { pointDate, pointTime, getPointDuration } from '../utils.js';
 
-const createPointTemplate = (point) => {
+const createTemplate = (point, destination, typeOffers) => {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
+
+  const selectedOffers = typeOffers.filter((offer) => point.offers.includes(offer.id));
 
   const dateResult = pointDate(dateFrom);
   const timeStart = pointTime(dateFrom);
@@ -10,14 +12,14 @@ const createPointTemplate = (point) => {
   const duration = getPointDuration(dateFrom, dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
-  return `
+  return (`
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">${dateResult}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} Amsterdam</h3>
+      <h3 class="event__title">${type} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom}">${timeStart}</time>
@@ -31,11 +33,11 @@ const createPointTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
+        ${selectedOffers.map((offer) => `<li class="event__offer">
+  <span class="event__offer-title">${offer.title}</span>
+  &plus;&euro;&nbsp;
+  <span class="event__offer-price">${offer.price}</span>
+</li>`).join('')}
       </ul>
       <button class="event__favorite-btn ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -48,26 +50,32 @@ const createPointTemplate = (point) => {
       </button>
     </div>
   </li>
- `;
+ `);
 };
 
-export default class PointView {
-  constructor({ point }) {
-    this.point = point;
+export default class PointView extends AbstractView {
+  #point = null;
+  #destination = null;
+  #typeOffers = null;
+  #handleEditClick = null;
+
+  constructor({ point, destination, typeOffers, onEditClick }) {
+    super();
+    this.#point = point;
+    this.#destination = destination;
+    this.#typeOffers = typeOffers;
+    this.#handleEditClick = onEditClick;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point);
+  get template() {
+    return createTemplate(this.#point, this.#destination, this.#typeOffers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
