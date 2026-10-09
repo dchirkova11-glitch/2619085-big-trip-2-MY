@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 import PointView from '../views/point-view.js';
 
 export default class PointPresenter {

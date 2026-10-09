@@ -139,7 +139,6 @@ export default class FormView extends AbstractView {
     this.#destination = destination;
     this.#typeOffers = typeOffers;
     this.#destinations = destinations;
-
   }
 
   get template() {

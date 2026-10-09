@@ -7,7 +7,7 @@ export const pointsMock = [
     destination: 'd-1',
     isFavorite: false,
     offers: [
-      'of-1', 'of-2'
+      'of-1'
     ],
     type: 'taxi'
   },

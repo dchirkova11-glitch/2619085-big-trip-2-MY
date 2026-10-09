@@ -1,9 +1,9 @@
-import { render } from '../render.js';
 import FormView from '../views/form-view.js';
 import FilterView from '../views/filter-view.js';
 import SortView from '../views/sorting-view.js';
 import ListView from '../views/list-view.js';
 import PointPresenter from './point-presenter.js';
+import { render } from '../framework/render.js';
 
 export default class TripPresenter {
   #listComponent = new ListView();
@@ -37,11 +37,11 @@ export default class TripPresenter {
       destination: formDestination,
       typeOffers: formTypeOffers,
       destinations: this.#destinationsModel.destinations
-    }), this.#listComponent.getElement());
+    }), this.#listComponent.element);
 
-    this.#tripPoints.slice(1).forEach((point) => {
+    this.#tripPoints.forEach((point) => {
       const pointPresenter = new PointPresenter({
-        listContainer: this.#listComponent.getElement(),
+        listContainer: this.#listComponent.element,
         offersModel: this.#offersModel,
         destinationsModel: this.#destinationsModel
       });
