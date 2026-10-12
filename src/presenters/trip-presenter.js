@@ -3,6 +3,7 @@ import SortView from '../views/sorting-view.js';
 import ListView from '../views/list-view.js';
 import PointPresenter from './point-presenter.js';
 import { render } from '../framework/render.js';
+import NoPointView from '../views/no-point-view.js';
 
 export default class TripPresenter {
   #listComponent = new ListView();
@@ -41,6 +42,11 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (this.#tripPoints.length === 0) {
+      render(new NoPointView(), this.#tripContainer);
+      return;
+    }
+
     render(new SortView(), this.#tripContainer);
     render(this.#listComponent, this.#tripContainer);
     this.#tripPoints.forEach((point) => this.#renderPoint(point));
