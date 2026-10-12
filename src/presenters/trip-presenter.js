@@ -1,6 +1,5 @@
-import FilterView from '../views/filter-view.js';
-import { render } from '../framework/render.js';
 import PointListPresenter from './point-list-presenter.js';
+import FilterPresenter from './filter-presenter.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -18,7 +17,6 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#renderFilters();
     const pointListPresenter = new PointListPresenter({
       container: this.#tripContainer,
       pointsModel: this.#pointsModel,
@@ -26,9 +24,11 @@ export default class TripPresenter {
       destinationsModel: this.#destinationsModel
     });
     pointListPresenter.init();
-  }
 
-  #renderFilters() {
-    render(new FilterView(), this.#filterContainer);
+    const filterPresenter = new FilterPresenter({
+      container: this.#filterContainer,
+      pointsModel: this.#pointsModel
+    });
+    filterPresenter.init();
   }
 }

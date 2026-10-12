@@ -34,3 +34,7 @@ export const getPointDuration = (dateFrom, dateTo) => {
 
   return `${padNumber(minutes)}M`;
 };
+
+export const isPointFuture = (point) => dayjs(point.dateFrom).isAfter(dayjs());
+export const isPointPast = (point) => dayjs(point.dateTo).isBefore(dayjs());
+export const isPointPresent = (point) => !isPointFuture(point) && !isPointPast(point);
