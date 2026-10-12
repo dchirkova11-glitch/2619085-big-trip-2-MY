@@ -1,6 +1,8 @@
 import { BLANK_POINT, POINT_TYPES } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { capitalize, formDate } from '../utils.js';
+import { capitalize } from '../utils/common.js';
+import { formatFormDate } from '../utils/point.js';
+
 
 const createOffersTemplate = (offers, selectedOffers) => (
   offers.map((offer) => {
@@ -52,8 +54,8 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
 
   const destinationTemplate = createDestinationTemplate(destination);
 
-  const dateTimeStart = formDate(dateFrom);
-  const dateTimeEnd = formDate(dateTo);
+  const dateTimeStart = formatFormDate(dateFrom);
+  const dateTimeEnd = formatFormDate(dateTo);
 
   return (`
   <form class="event event--edit" action="#" method="post">
