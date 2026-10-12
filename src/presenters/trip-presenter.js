@@ -23,18 +23,26 @@ export default class TripPresenter {
 
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
+    this.#renderFilters();
+    this.#renderTrip();
+  }
 
+  #renderPoint(point){
+    const pointPresenter = new PointPresenter({
+      listContainer: this.#listComponent.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel
+    });
+    pointPresenter.init(point);
+  }
+
+  #renderFilters() {
     render(new FilterView(), this.#filterContainer);
+  }
+
+  #renderTrip() {
     render(new SortView(), this.#tripContainer);
     render(this.#listComponent, this.#tripContainer);
-
-    this.#tripPoints.forEach((point) => {
-      const pointPresenter = new PointPresenter({
-        listContainer: this.#listComponent.element,
-        offersModel: this.#offersModel,
-        destinationsModel: this.#destinationsModel
-      });
-      pointPresenter.init(point);
-    });
+    this.#tripPoints.forEach((point) => this.#renderPoint(point));
   }
 }
