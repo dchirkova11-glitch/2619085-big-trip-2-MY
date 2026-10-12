@@ -2,8 +2,8 @@ export const pointsMock = [
   {
     id: 'p-1',
     basePrice: 100,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateFrom: '2026-07-10T22:55:56.845Z',
+    dateTo: '2026-07-11T11:22:13.375Z',
     destination: 'd-1',
     isFavorite: false,
     offers: [
@@ -14,8 +14,8 @@ export const pointsMock = [
   {
     id: 'p-2',
     basePrice: 200,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateFrom: '2026-10-10T22:55:56.845Z',
+    dateTo: '2026-11-15T11:22:13.375Z',
     destination: 'd-2',
     isFavorite: true,
     offers: [],
@@ -24,8 +24,8 @@ export const pointsMock = [
   {
     id: 'p-3',
     basePrice: 300,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateFrom: '2027-07-10T22:55:56.845Z',
+    dateTo: '2027-07-11T11:22:13.375Z',
     destination: 'd-3',
     isFavorite: false,
     offers: [
@@ -36,8 +36,8 @@ export const pointsMock = [
   {
     id: 'p-4',
     basePrice: 400,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateFrom: '2026-12-10T22:55:56.845Z',
+    dateTo: '2026-12-11T11:22:13.375Z',
     destination: 'd-4',
     isFavorite: true,
     offers: [

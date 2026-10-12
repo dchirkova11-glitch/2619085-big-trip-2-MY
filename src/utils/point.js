@@ -1,0 +1,36 @@
+import dayjs from 'dayjs';
+
+const DateFormat = {
+  POINT_DATE: 'MMM DD',
+  POINT_TIME: 'HH:mm',
+  FORM_DATE: 'DD/MM/YY HH:mm',
+};
+
+const MINUTES_IN_HOUR = 60;
+const MINUTES_IN_DAY = 24 * MINUTES_IN_HOUR;
+
+const formatDate = (date, format) => date ? dayjs(date).format(format) : '';
+
+const padNumber = (number) => String(number).padStart(2, '0');
+
+export const formatPointDate = (date) => formatDate(date, DateFormat.POINT_DATE);
+export const formatPointTime = (date) => formatDate(date, DateFormat.POINT_TIME);
+export const formatFormDate = (date) => formatDate(date, DateFormat.FORM_DATE);
+
+export const getPointDuration = (dateFrom, dateTo) => {
+  const totalMinutes = dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
+
+  const days = Math.floor(totalMinutes / MINUTES_IN_DAY);
+  const hours = Math.floor((totalMinutes % MINUTES_IN_DAY) / MINUTES_IN_HOUR);
+  const minutes = totalMinutes % MINUTES_IN_HOUR;
+
+  if (days > 0) {
+    return `${padNumber(days)}D ${padNumber(hours)}H ${padNumber(minutes)}M`;
+  }
+
+  if (hours > 0) {
+    return `${padNumber(hours)}H ${padNumber(minutes)}M`;
+  }
+
+  return `${padNumber(minutes)}M`;
+};

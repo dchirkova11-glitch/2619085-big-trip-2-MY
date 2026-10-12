@@ -1,14 +1,15 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { pointDate, pointTime, getPointDuration } from '../utils.js';
+import { formatPointDate, formatPointTime, getPointDuration } from '../utils/point.js';
+
 
 const createTemplate = (point, destination, typeOffers) => {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
 
   const selectedOffers = typeOffers.filter((offer) => point.offers.includes(offer.id));
 
-  const dateResult = pointDate(dateFrom);
-  const timeStart = pointTime(dateFrom);
-  const timeEnd = pointTime(dateTo);
+  const dateResult = formatPointDate(dateFrom);
+  const timeStart = formatPointTime(dateFrom);
+  const timeEnd = formatPointTime(dateTo);
   const duration = getPointDuration(dateFrom, dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
