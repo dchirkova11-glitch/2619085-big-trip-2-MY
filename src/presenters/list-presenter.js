@@ -28,6 +28,7 @@ export default class ListPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
+    this.#sortPoints(SortType.DAY);
     this.#renderList();
   }
 
@@ -91,6 +92,8 @@ export default class ListPresenter {
       return;
     }
     this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPoints();
   };
 
   #sortPoints(sortType) {

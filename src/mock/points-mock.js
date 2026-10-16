@@ -1,17 +1,5 @@
 export const pointsMock = [
   {
-    id: 'p-1',
-    basePrice: 100,
-    dateFrom: '2026-07-10T22:55:56.845Z',
-    dateTo: '2026-07-11T11:22:13.375Z',
-    destination: 'd-1',
-    isFavorite: false,
-    offers: [
-      'of-1'
-    ],
-    type: 'taxi'
-  },
-  {
     id: 'p-2',
     basePrice: 200,
     dateFrom: '2026-10-10T22:55:56.845Z',
@@ -24,8 +12,8 @@ export const pointsMock = [
   {
     id: 'p-3',
     basePrice: 300,
-    dateFrom: '2027-07-10T22:55:56.845Z',
-    dateTo: '2027-07-11T11:22:13.375Z',
+    dateFrom: '2026-11-10T22:55:56.845Z',
+    dateTo: '2026-11-11T11:22:13.375Z',
     destination: 'd-3',
     isFavorite: false,
     offers: [
@@ -44,5 +32,17 @@ export const pointsMock = [
       'of-6'
     ],
     type: 'train'
-  }
+  },
+  {
+    id: 'p-1',
+    basePrice: 100,
+    dateFrom: '2026-07-10T22:55:56.845Z',
+    dateTo: '2026-07-11T11:22:13.375Z',
+    destination: 'd-1',
+    isFavorite: false,
+    offers: [
+      'of-1'
+    ],
+    type: 'taxi'
+  },
 ];
