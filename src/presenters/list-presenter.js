@@ -2,18 +2,21 @@ import ListView from '../views/list-view.js';
 import PointPresenter from './point-presenter.js';
 import { render } from '../framework/render.js';
 import NoPointView from '../views/no-point-view.js';
-import SortView from '../views/sort-view.js';
 import { updateItem } from '../utils/common.js';
+import SortView from '../views/sort-view.js';
+import { SortType } from '../const.js';
+import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/point.js';
 
 export default class ListPresenter {
   #container = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #listComponent = new ListView();
   #noPointComponent = new NoPointView();
   #pointPresenters = new Map();
+  #currentSortType = SortType.DAY;
   #points = [];
 
   constructor({ container, pointsModel, offersModel, destinationsModel }) {
@@ -25,6 +28,7 @@ export default class ListPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
+    this.#sortPoints(SortType.DAY);
     this.#renderList();
   }
 
@@ -38,6 +42,9 @@ export default class ListPresenter {
   }
 
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortComponent, this.#container);
   }
 
@@ -79,4 +86,28 @@ export default class ListPresenter {
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
+
+  #handleSortTypeChange = (sortType) => {
+    if(this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPoints();
+  };
+
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#points.sort(sortPointByDay);
+        break;
+      case SortType.TIME:
+        this.#points.sort(sortPointByTime);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortPointByPrice);
+        break;
+    }
+    this.#currentSortType = sortType;
+  }
 }

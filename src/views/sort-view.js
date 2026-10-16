@@ -1,3 +1,4 @@
+import { SortType } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createTemplate = () => (`
@@ -7,6 +8,7 @@ const createTemplate = () => (`
         type="radio" 
         name="trip-sort" 
         value="sort-day" checked
+        data-sort-type="${SortType.DAY}"
       >
       <label class="trip-sort__btn" for="sort-day">Day</label>
     </div>
@@ -25,6 +27,7 @@ const createTemplate = () => (`
         type="radio" 
         name="trip-sort" 
         value="sort-time"
+        data-sort-type="${SortType.TIME}"
       >
       <label class="trip-sort__btn" for="sort-time">Time</label>
     </div>
@@ -34,6 +37,7 @@ const createTemplate = () => (`
         type="radio" 
         name="trip-sort" 
         value="sort-price"
+        data-sort-type="${SortType.PRICE}"
       >
       <label class="trip-sort__btn" for="sort-price">Price</label>
     </div>
@@ -50,7 +54,19 @@ const createTemplate = () => (`
  `);
 
 export default class SortView extends AbstractView {
+  #handleSortTypeChange = null;
+
+  constructor ({ onSortTypeChange }) {
+    super();
+    this.#handleSortTypeChange = onSortTypeChange;
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
+  }
+
   get template() {
     return createTemplate();
   }
+
+  #sortTypeChangeHandler = (evt) => {
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }
