@@ -8,7 +8,7 @@ const createFilterItemTemplate = ({type, count}, isChecked) => (`
         name="trip-filter" 
         value="${type}"
         ${isChecked ? 'checked' : ''}
-        ${count === 0 ? 'disabled' : ''}
+        ${!count ? 'disabled' : ''}
       >
       <label class="trip-filters__filter-label" 
         for="filter-${type}">${type}</label>
