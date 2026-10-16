@@ -49,7 +49,8 @@ export default class ListPresenter {
     const pointPresenter = new PointPresenter({
       listContainer: this.#listComponent.element,
       offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handlePointChange
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
