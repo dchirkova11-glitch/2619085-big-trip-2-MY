@@ -38,3 +38,11 @@ export const getPointDuration = (dateFrom, dateTo) => {
 export const isPointFuture = (point) => dayjs(point.dateFrom).isAfter(dayjs());
 export const isPointPast = (point) => dayjs(point.dateTo).isBefore(dayjs());
 export const isPointPresent = (point) => !isPointFuture(point) && !isPointPast(point);
+
+export const sortPointByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+export const sortPointByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+export const sortPointByTime = (pointA, pointB) => {
+  const durationA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
+  const durationB = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
+  return durationB - durationA;
+};
