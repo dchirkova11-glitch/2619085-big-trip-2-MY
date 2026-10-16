@@ -1,15 +1,17 @@
-import SortView from '../views/sorting-view.js';
 import ListView from '../views/list-view.js';
 import PointPresenter from './point-presenter.js';
 import { render } from '../framework/render.js';
 import NoPointView from '../views/no-point-view.js';
+import SortView from '../views/sort-view.js';
 
-export default class PointListPresenter {
+export default class ListPresenter {
   #container = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #sortComponent = new SortView();
   #listComponent = new ListView();
+  #noPointComponent = new NoPointView();
   #points = [];
 
   constructor({ container, pointsModel, offersModel, destinationsModel }) {
@@ -26,11 +28,18 @@ export default class PointListPresenter {
 
   #renderList() {
     if (this.#points.length === 0) {
-      render(new NoPointView(), this.#container);
+      this.#renderNoPoints();
       return;
     }
-    render(new SortView(), this.#container);
-    render(this.#listComponent, this.#container);
+    this.#renderSort();
+    this.#renderPointList();
+  }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#container);
+  }
+
+  #renderPoints() {
     this.#points.forEach((point) => this.#renderPoint(point));
   }
 
@@ -41,5 +50,14 @@ export default class PointListPresenter {
       destinationsModel: this.#destinationsModel
     });
     pointPresenter.init(point);
+  }
+
+  #renderNoPoints() {
+    render(this.#noPointComponent, this.#container);
+  }
+
+  #renderPointList() {
+    render(this.#listComponent, this.#container);
+    this.#renderPoints();
   }
 }

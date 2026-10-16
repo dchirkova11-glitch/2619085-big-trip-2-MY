@@ -1,5 +1,5 @@
-import PointListPresenter from './point-list-presenter.js';
 import FilterPresenter from './filter-presenter.js';
+import ListPresenter from './list-presenter.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -17,13 +17,13 @@ export default class TripPresenter {
   }
 
   init() {
-    const pointListPresenter = new PointListPresenter({
+    const listPresenter = new ListPresenter({
       container: this.#tripContainer,
       pointsModel: this.#pointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel
     });
-    pointListPresenter.init();
+    listPresenter.init();
 
     const filterPresenter = new FilterPresenter({
       container: this.#filterContainer,
