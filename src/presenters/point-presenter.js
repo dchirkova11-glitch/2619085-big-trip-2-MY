@@ -25,7 +25,7 @@ export default class PointPresenter {
       point: this.#point,
       destination,
       typeOffers,
-      onEditClick: () => this.#replacePointToForm()
+      onEditClick: this.#handleEditClick
     });
 
     this.#formComponent = new FormView({
@@ -33,8 +33,8 @@ export default class PointPresenter {
       destination,
       typeOffers,
       destinations: this.#destinationsModel.destinations,
-      onFormSubmit: () => this.#replaceFormToPoint(),
-      onRollupClick: () => this.#replaceFormToPoint()
+      onFormSubmit: this.#handleFormSubmit,
+      onRollupClick: this.#handleRollupClick
     });
 
     render(this.#pointComponent, this.#listContainer);
@@ -42,18 +42,30 @@ export default class PointPresenter {
 
   #replacePointToForm() {
     replace(this.#formComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#escDownHandler);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#formComponent);
-    document.removeEventListener('keydown', this.#escDownHandler);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  #escDownHandler = (evt) => {
+  #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#replaceFormToPoint();
     }
+  };
+
+  #handleEditClick = () => {
+    this.#replacePointToForm();
+  };
+
+  #handleFormSubmit = () => {
+    this.#replaceFormToPoint();
+  };
+
+  #handleRollupClick = () => {
+    this.#replaceFormToPoint();
   };
 }
