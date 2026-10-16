@@ -12,6 +12,7 @@ export default class ListPresenter {
   #sortComponent = new SortView();
   #listComponent = new ListView();
   #noPointComponent = new NoPointView();
+  #pointPresenters = new Map();
   #points = [];
 
   constructor({ container, pointsModel, offersModel, destinationsModel }) {
@@ -50,6 +51,7 @@ export default class ListPresenter {
       destinationsModel: this.#destinationsModel
     });
     pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #renderNoPoints() {
@@ -59,5 +61,10 @@ export default class ListPresenter {
   #renderPointList() {
     render(this.#listComponent, this.#container);
     this.#renderPoints();
+  }
+
+  #clearPointList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 }
