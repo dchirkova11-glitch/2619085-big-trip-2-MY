@@ -1,3 +1,5 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 import { BLANK_POINT, POINT_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatFormDate } from '../utils/point.js';
@@ -162,6 +164,8 @@ export default class FormView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleRollupClick = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor({
     point = BLANK_POINT,
@@ -206,6 +210,8 @@ export default class FormView extends AbstractStatefulView {
     if (offersElement) {
       offersElement.addEventListener('change', this.#offersChangeHandler);
     }
+
+    this.#setDatepickers();
   }
 
   reset(point) {
@@ -260,5 +266,55 @@ export default class FormView extends AbstractStatefulView {
 
   static parsePointToState(point) {
     return {...point};
+  }
+
+  #setDatepickers() {
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+      }
+    );
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler,
+        minDate: this._state.dateFrom,
+      }
+    );
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+    this.#datepickerTo.set('minDate', userDate);
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
+  };
+
+  removeElement() {
+    super.removeElement();
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
   }
 }
