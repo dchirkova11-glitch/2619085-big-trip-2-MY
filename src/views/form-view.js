@@ -5,9 +5,7 @@ import { formatFormDate } from '../utils/point.js';
 
 const createOffersTemplate = (offers, selectedOffers) => (
   offers.map((offer) => {
-
     const isChecked = selectedOffers.includes(offer.id) ? 'checked' : '';
-
     return (`
       <div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" 
@@ -57,14 +55,16 @@ const createFormTemplate = (point, allOffers, destinations) => {
   const destination = destinations.find((city) => city.id === destinationId);
 
   const offersTemplate = typeOffers && typeOffers.length > 0
-    ? createOffersTemplate(typeOffers, offers)
+    ? (`<section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <div class="event__available-offers">
+             ${createOffersTemplate(typeOffers, offers)}
+          </div>
+        </section>`)
     : '';
-
   const destinationTemplate = createDestinationTemplate(destination);
-
   const dateTimeStart = formatFormDate(dateFrom);
   const dateTimeEnd = formatFormDate(dateTo);
-
   return (`
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -78,8 +78,8 @@ const createFormTemplate = (point, allOffers, destinations) => {
         >
       </label>
       <input class="event__type-toggle  visually-hidden" 
-      id="event-type-toggle-1" type="checkbox">
-
+      id="event-type-toggle-1" type="checkbox"
+      >
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
@@ -99,7 +99,6 @@ const createFormTemplate = (point, allOffers, destinations) => {
         </fieldset>
       </div>
     </div>
-
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
@@ -115,7 +114,6 @@ const createFormTemplate = (point, allOffers, destinations) => {
         ${destinations.map((city) => `<option value="${city.name}"></option>`).join('')}
       </datalist>
     </div>
-
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
       <input class="event__input  event__input--time" 
@@ -133,7 +131,6 @@ const createFormTemplate = (point, allOffers, destinations) => {
         value="${dateTimeEnd}"
       >
     </div>
-
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
         <span class="visually-hidden">Price</span>
@@ -146,21 +143,14 @@ const createFormTemplate = (point, allOffers, destinations) => {
         value="${basePrice}"
       >
     </div>
-
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
     <button class="event__reset-btn" type="reset">Delete</button>
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
   </header>
-
   <section class="event__details">
-    <section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-      <div class="event__available-offers">
-        ${offersTemplate}
-      </div>
-    </section>
+    ${offersTemplate}
     ${destinationTemplate}
   </section>
 </form>
@@ -211,9 +201,11 @@ export default class FormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
-    this.element
-      .querySelector('.event__available-offers')
-      .addEventListener('change', this.#offersChangeHandler);
+
+    const offersElement = this.element.querySelector('.event__available-offers');
+    if (offersElement) {
+      offersElement.addEventListener('change', this.#offersChangeHandler);
+    }
   }
 
   reset(point) {
