@@ -62,5 +62,44 @@ export const offersMock = [
         price: 80
       }
     ]
+  },
+  {
+    type: 'ship',
+    offers: [
+      {
+        id: 'of-9',
+        title: 'Choose cabin',
+        price: 60
+      },
+      {
+        id: 'of-10',
+        title: 'Add dinner',
+        price: 30
+      }
+    ]
+  },
+  {
+    type: 'drive',
+    offers: [
+      {
+        id: 'of-11',
+        title: 'Rent a car',
+        price: 200
+      }
+    ]
+  },
+  {
+    type: 'sightseeing',
+    offers: []
+  },
+  {
+    type: 'restaurant',
+    offers: [
+      {
+        id: 'of-12',
+        title: 'Book a table',
+        price: 10
+      }
+    ]
   }
 ];
