@@ -208,6 +208,9 @@ export default class FormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputHandler);
   }
 
   #formSubmitHandler = (evt) => {
@@ -224,6 +227,12 @@ export default class FormView extends AbstractStatefulView {
     this.updateElement({
       type: evt.target.value,
       offers: []
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    this._setState({
+      basePrice: Number(evt.target.value)
     });
   };
 
