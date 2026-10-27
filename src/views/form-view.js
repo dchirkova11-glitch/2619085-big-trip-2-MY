@@ -1,5 +1,5 @@
 import { BLANK_POINT, POINT_TYPES } from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatFormDate } from '../utils/point.js';
 
 
@@ -34,7 +34,9 @@ const createDestinationTemplate = (destination) => {
   const picturesTemplate = pictures.length > 0
     ? `<div class="event__photos-container">
          <div class="event__photos-tape">
-           ${pictures.map((pic) => `<img class="event__photo" src = "${pic.src}" alt = "${pic.description}">`).join('')}
+           ${pictures.map((pic) => `<img class="event__photo" 
+            src = "${pic.src}" 
+            alt = "${pic.description}">`).join('')}
          </div>
        </div>`
     : '';
@@ -66,17 +68,25 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+        <img class="event__type-icon" 
+          width="17" height="17" 
+          src="img/icons/${type}.png" 
+          alt="Event type icon"
+        >
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+      <input class="event__type-toggle  visually-hidden" 
+      id="event-type-toggle-1" type="checkbox">
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
           ${POINT_TYPES.map((pointType) => `
             <div class="event__type-item">
-              <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" 
-                type="radio" name="event-type" 
+              <input 
+                id="event-type-${pointType}-1" 
+                class="event__type-input  visually-hidden" 
+                type="radio" 
+                name="event-type" 
                 value="${pointType}" ${pointType === type ? 'checked' : ''}
               >
               <label class="event__type-label  event__type-label--${pointType}" 
@@ -154,17 +164,23 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
       `);
 };
 
-export default class FormView extends AbstractView {
-  #point = null;
+export default class FormView extends AbstractStatefulView {
   #destination = null;
   #typeOffers = null;
   #destinations = null;
   #handleFormSubmit = null;
   #handleRollupClick = null;
 
-  constructor({ point = BLANK_POINT, destination, typeOffers, destinations, onFormSubmit, onRollupClick }) {
+  constructor({
+    point = BLANK_POINT,
+    destination,
+    typeOffers,
+    destinations,
+    onFormSubmit,
+    onRollupClick
+  }) {
     super();
-    this.#point = point;
+    this._setState(FormView.parsePointToState(point));
     this.#destination = destination;
     this.#typeOffers = typeOffers;
     this.#destinations = destinations;
@@ -177,8 +193,15 @@ export default class FormView extends AbstractView {
   }
 
   get template() {
-    return createFormTemplate(this.#point, this.#destination, this.#typeOffers, this.#destinations);
+    return createFormTemplate(
+      this._state,
+      this.#destination,
+      this.#typeOffers,
+      this.#destinations
+    );
   }
+
+  _restoreHandlers() {}
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -189,4 +212,8 @@ export default class FormView extends AbstractView {
     evt.preventDefault();
     this.#handleRollupClick();
   };
+
+  static parsePointToState(point) {
+    return {...point};
+  }
 }
