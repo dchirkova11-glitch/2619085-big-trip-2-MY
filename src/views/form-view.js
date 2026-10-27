@@ -216,6 +216,10 @@ export default class FormView extends AbstractStatefulView {
       .addEventListener('change', this.#offersChangeHandler);
   }
 
+  reset(point) {
+    this.updateElement(FormView.parsePointToState(point));
+  }
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
