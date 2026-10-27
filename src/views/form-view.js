@@ -15,6 +15,7 @@ const createOffersTemplate = (offers, selectedOffers) => (
           type="checkbox" 
           name="event-offer-${offer.id}" 
           ${isChecked}
+          data-offer-id="${offer.id}"
         >
         <label class="event__offer-label" for="event-offer-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;
@@ -210,6 +211,9 @@ export default class FormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+    this.element
+      .querySelector('.event__available-offers')
+      .addEventListener('change', this.#offersChangeHandler);
   }
 
   #formSubmitHandler = (evt) => {
@@ -245,6 +249,16 @@ export default class FormView extends AbstractStatefulView {
 
     this.updateElement({
       destination: selectedDestination.id
+    });
+  };
+
+  #offersChangeHandler = () => {
+    const checkedInputs = this.element.querySelectorAll('.event__offer-checkbox:checked');
+    const selectedOfferIds = Array
+      .from(checkedInputs)
+      .map((input) => input.dataset.offerId);
+    this._setState({
+      offers: selectedOfferIds
     });
   };
 
