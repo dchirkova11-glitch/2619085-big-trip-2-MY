@@ -50,10 +50,10 @@ const createDestinationTemplate = (destination) => {
     : '';
 };
 
-const createFormTemplate = (point, destination, allOffers, destinations) => {
-  const { basePrice, dateFrom, dateTo, type, offers } = point;
-
+const createFormTemplate = (point, allOffers, destinations) => {
+  const { basePrice, dateFrom, dateTo, type, offers, destination: destinationId } = point;
   const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
+  const destination = destinations.find((city) => city.id === destinationId);
 
   const offersTemplate = typeOffers && typeOffers.length > 0
     ? createOffersTemplate(typeOffers, offers)
@@ -167,7 +167,6 @@ const createFormTemplate = (point, destination, allOffers, destinations) => {
 };
 
 export default class FormView extends AbstractStatefulView {
-  #destination = null;
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
@@ -175,7 +174,6 @@ export default class FormView extends AbstractStatefulView {
 
   constructor({
     point = BLANK_POINT,
-    destination,
     offers,
     destinations,
     onFormSubmit,
@@ -183,7 +181,6 @@ export default class FormView extends AbstractStatefulView {
   }) {
     super();
     this._setState(FormView.parsePointToState(point));
-    this.#destination = destination;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
@@ -194,7 +191,6 @@ export default class FormView extends AbstractStatefulView {
   get template() {
     return createFormTemplate(
       this._state,
-      this.#destination,
       this.#offers,
       this.#destinations
     );
@@ -211,6 +207,9 @@ export default class FormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--price')
       .addEventListener('input', this.#priceInputHandler);
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
   }
 
   #formSubmitHandler = (evt) => {
@@ -233,6 +232,19 @@ export default class FormView extends AbstractStatefulView {
   #priceInputHandler = (evt) => {
     this._setState({
       basePrice: Number(evt.target.value)
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const selectedDestination = this.#destinations
+      .find((city) => city.name === evt.target.value);
+
+    if (!selectedDestination) {
+      return;
+    }
+
+    this.updateElement({
+      destination: selectedDestination.id
     });
   };
 

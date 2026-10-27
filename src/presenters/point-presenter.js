@@ -42,7 +42,6 @@ export default class PointPresenter {
 
     this.#formComponent = new FormView({
       point: this.#point,
-      destination,
       offers: this.#offersModel.offers,
       destinations: this.#destinationsModel.destinations,
       onFormSubmit: this.#handleFormSubmit,
