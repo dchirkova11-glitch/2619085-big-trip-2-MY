@@ -50,8 +50,10 @@ const createDestinationTemplate = (destination) => {
     : '';
 };
 
-const createFormTemplate = (point, destination, typeOffers, destinations) => {
+const createFormTemplate = (point, destination, allOffers, destinations) => {
   const { basePrice, dateFrom, dateTo, type, offers } = point;
+
+  const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
 
   const offersTemplate = typeOffers && typeOffers.length > 0
     ? createOffersTemplate(typeOffers, offers)
@@ -166,7 +168,7 @@ const createFormTemplate = (point, destination, typeOffers, destinations) => {
 
 export default class FormView extends AbstractStatefulView {
   #destination = null;
-  #typeOffers = null;
+  #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
   #handleRollupClick = null;
@@ -174,7 +176,7 @@ export default class FormView extends AbstractStatefulView {
   constructor({
     point = BLANK_POINT,
     destination,
-    typeOffers,
+    offers,
     destinations,
     onFormSubmit,
     onRollupClick
@@ -182,26 +184,31 @@ export default class FormView extends AbstractStatefulView {
     super();
     this._setState(FormView.parsePointToState(point));
     this.#destination = destination;
-    this.#typeOffers = typeOffers;
+    this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupClick = onRollupClick;
-    this.element.addEventListener('submit', this.#formSubmitHandler);
-    this.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#rollupClickHandler);
+    this._restoreHandlers();
   }
 
   get template() {
     return createFormTemplate(
       this._state,
       this.#destination,
-      this.#typeOffers,
+      this.#offers,
       this.#destinations
     );
   }
 
-  _restoreHandlers() {}
+  _restoreHandlers() {
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#rollupClickHandler);
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('change', this.#typeChangeHandler);
+  }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -211,6 +218,13 @@ export default class FormView extends AbstractStatefulView {
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleRollupClick();
+  };
+
+  #typeChangeHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value,
+      offers: []
+    });
   };
 
   static parsePointToState(point) {
