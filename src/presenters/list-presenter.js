@@ -2,7 +2,6 @@ import ListView from '../views/list-view.js';
 import PointPresenter from './point-presenter.js';
 import { render } from '../framework/render.js';
 import NoPointView from '../views/no-point-view.js';
-import { updateItem } from '../utils/common.js';
 import SortView from '../views/sort-view.js';
 import { SortType } from '../const.js';
 import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/point.js';
@@ -17,7 +16,6 @@ export default class ListPresenter {
   #noPointComponent = new NoPointView();
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
-  #points = [];
 
   constructor({ container, pointsModel, offersModel, destinationsModel }) {
     this.#container = container;
@@ -26,14 +24,24 @@ export default class ListPresenter {
     this.#destinationsModel = destinationsModel;
   }
 
+  get points () {
+    switch (this.#currentSortType) {
+      case SortType.DAY:
+        return [...this.#pointsModel.points].sort(sortPointByDay);
+      case SortType.TIME:
+        return [...this.#pointsModel.points].sort(sortPointByTime);
+      case SortType.PRICE:
+        return [...this.#pointsModel.points].sort(sortPointByPrice);
+    }
+    return this.#pointsModel.points;
+  }
+
   init() {
-    this.#points = [...this.#pointsModel.points];
-    this.#sortPoints(SortType.DAY);
     this.#renderList();
   }
 
   #renderList() {
-    if (this.#points.length === 0) {
+    if (this.points.length === 0) {
       this.#renderNoPoints();
       return;
     }
@@ -49,7 +57,7 @@ export default class ListPresenter {
   }
 
   #renderPoints() {
-    this.#points.forEach((point) => this.#renderPoint(point));
+    this.points.forEach((point) => this.#renderPoint(point));
   }
 
   #renderPoint(point) {
@@ -79,7 +87,6 @@ export default class ListPresenter {
   }
 
   #handlePointChange = (updatedPoint) => {
-    this.#points = updateItem(this.#points, updatedPoint);
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
@@ -91,23 +98,9 @@ export default class ListPresenter {
     if(this.#currentSortType === sortType) {
       return;
     }
-    this.#sortPoints(sortType);
+    this.#currentSortType = sortType;
     this.#clearPointList();
     this.#renderPoints();
   };
 
-  #sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#points.sort(sortPointByDay);
-        break;
-      case SortType.TIME:
-        this.#points.sort(sortPointByTime);
-        break;
-      case SortType.PRICE:
-        this.#points.sort(sortPointByPrice);
-        break;
-    }
-    this.#currentSortType = sortType;
-  }
 }
