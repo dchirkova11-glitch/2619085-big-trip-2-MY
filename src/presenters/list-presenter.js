@@ -3,7 +3,7 @@ import PointPresenter from './point-presenter.js';
 import { render } from '../framework/render.js';
 import NoPointView from '../views/no-point-view.js';
 import SortView from '../views/sort-view.js';
-import { SortType } from '../const.js';
+import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/point.js';
 
 export default class ListPresenter {
@@ -22,6 +22,7 @@ export default class ListPresenter {
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points () {
@@ -65,7 +66,7 @@ export default class ListPresenter {
       listContainer: this.#listComponent.element,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
     pointPresenter.init(point);
@@ -86,8 +87,20 @@ export default class ListPresenter {
     this.#pointPresenters.clear();
   }
 
-  #handlePointChange = (updatedPoint) => {
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.POINT:
+        this.#pointPresenters.get(data.id).init(data);
+        break;
+    }
   };
 
   #handleModeChange = () => {
