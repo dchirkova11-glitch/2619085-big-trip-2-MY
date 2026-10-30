@@ -26,6 +26,7 @@ export default class ListPresenter {
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points () {
@@ -119,6 +120,11 @@ export default class ListPresenter {
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.LIST:
+        this.#clearList();
+        this.#renderList();
+        break;
+      case UpdateType.ALL:
+        this.#currentSortType = SortType.DAY;
         this.#clearList();
         this.#renderList();
         break;

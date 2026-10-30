@@ -36,7 +36,8 @@ export default class TripPresenter {
 
     const filterPresenter = new FilterPresenter({
       container: this.#filterContainer,
-      pointsModel: this.#pointsModel
+      pointsModel: this.#pointsModel,
+      filterModel: this.#filterModel
     });
     filterPresenter.init();
   }
