@@ -166,13 +166,15 @@ export default class FormView extends AbstractStatefulView {
   #handleRollupClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #handleDeleteClick = null;
 
   constructor({
     point = BLANK_POINT,
     offers,
     destinations,
     onFormSubmit,
-    onRollupClick
+    onRollupClick,
+    onDeleteClick
   }) {
     super();
     this._setState(FormView.parsePointToState(point));
@@ -180,6 +182,7 @@ export default class FormView extends AbstractStatefulView {
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupClick = onRollupClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
@@ -205,6 +208,10 @@ export default class FormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
 
     const offersElement = this.element.querySelector('.event__available-offers');
     if (offersElement) {
@@ -262,6 +269,11 @@ export default class FormView extends AbstractStatefulView {
     this._setState({
       offers: selectedOfferIds
     });
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(FormView.parseStateToPoint(this._state));
   };
 
   static parsePointToState(point) {
