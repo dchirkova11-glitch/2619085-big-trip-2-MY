@@ -220,7 +220,7 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
   };
 
   #rollupClickHandler = (evt) => {
@@ -266,6 +266,10 @@ export default class FormView extends AbstractStatefulView {
 
   static parsePointToState(point) {
     return {...point};
+  }
+
+  static parseStateToPoint(state) {
+    return {...state};
   }
 
   #setDatepickers() {

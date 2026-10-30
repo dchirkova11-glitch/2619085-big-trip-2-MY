@@ -112,8 +112,9 @@ export default class PointPresenter {
     );
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (update) => {
     this.#replaceFormToPoint();
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.LIST, update);
   };
 
   #handleRollupClick = () => {

@@ -100,6 +100,10 @@ export default class ListPresenter {
       case UpdateType.POINT:
         this.#pointPresenters.get(data.id).init(data);
         break;
+      case UpdateType.LIST:
+        this.#clearPointList();
+        this.#renderPoints();
+        break;
     }
   };
 
