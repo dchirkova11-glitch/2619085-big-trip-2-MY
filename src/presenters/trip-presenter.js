@@ -7,13 +7,21 @@ export default class TripPresenter {
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
 
-  constructor({ tripContainer, filterContainer, pointsModel, offersModel, destinationsModel }) {
+  constructor({
+    tripContainer,
+    filterContainer,
+    pointsModel,
+    offersModel,
+    destinationsModel,
+    filterModel }) {
     this.#tripContainer = tripContainer;
     this.#filterContainer = filterContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#filterModel = filterModel;
   }
 
   init() {
@@ -21,7 +29,8 @@ export default class TripPresenter {
       container: this.#tripContainer,
       pointsModel: this.#pointsModel,
       offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel
+      destinationsModel: this.#destinationsModel,
+      filterModel: this.#filterModel
     });
     listPresenter.init();
 
