@@ -3,7 +3,7 @@ export const pointsMock = [
     id: 'p-2',
     basePrice: 200,
     dateFrom: '2026-10-10T22:55:56.845Z',
-    dateTo: '2026-11-15T11:22:13.375Z',
+    dateTo: '2026-10-15T11:22:13.375Z',
     destination: 'd-2',
     isFavorite: true,
     offers: [],
