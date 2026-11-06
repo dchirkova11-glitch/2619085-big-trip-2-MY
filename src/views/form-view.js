@@ -1,8 +1,10 @@
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { BLANK_POINT, POINT_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatFormDate } from '../utils/point.js';
+import { capitalize } from '../utils/common.js';
 
 
 const createOffersTemplate = (offers, selectedOffers) => (
@@ -65,6 +67,12 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         </section>`)
     : '';
   const destinationTemplate = createDestinationTemplate(destination);
+  const detailsTemplate = offersTemplate || destinationTemplate
+    ? (`<section class="event__details">
+          ${offersTemplate}
+          ${destinationTemplate}
+        </section>`)
+    : '';
   const dateTimeStart = formatFormDate(dateFrom);
   const dateTimeEnd = formatFormDate(dateTo);
   return (`
@@ -95,7 +103,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
                 value="${pointType}" ${pointType === type ? 'checked' : ''}
               >
               <label class="event__type-label  event__type-label--${pointType}" 
-              for="event-type-${pointType}-1">${pointType}</label>
+              for="event-type-${pointType}-1">${capitalize(pointType)}</label>
             </div>
           `).join('')}
         </fieldset>
@@ -109,7 +117,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         id="event-destination-1" 
         type="text" 
         name="event-destination" 
-        value="${destination ? destination.name : ''}" 
+        value="${he.encode(destination ? destination.name : '')}" 
         list="destination-list-1"
       >
       <datalist id="destination-list-1">
@@ -142,7 +150,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         id="event-price-1" 
         type="text" 
         name="event-price" 
-        value="${basePrice}"
+        value="${he.encode(String(basePrice))}"
       >
     </div>
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -153,11 +161,8 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
       <span class="visually-hidden">Open event</span>
     </button>`)}
   </header>
-  <section class="event__details">
-    ${offersTemplate}
-    ${destinationTemplate}
-  </section>
-</form>
+     ${detailsTemplate}
+  </form>
       `);
 };
 
@@ -235,6 +240,12 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    if(!this._state.destination
+      || !this._state.dateFrom
+      || !this._state.dateTo
+      || this._state.basePrice <= 0) {
+      return;
+    }
     this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
   };
 
@@ -251,8 +262,10 @@ export default class FormView extends AbstractStatefulView {
   };
 
   #priceInputHandler = (evt) => {
+    const price = evt.target.value.replace(/\D/g, '');
+    evt.target.value = price;
     this._setState({
-      basePrice: Number(evt.target.value)
+      basePrice: Number(price)
     });
   };
 
@@ -261,6 +274,7 @@ export default class FormView extends AbstractStatefulView {
       .find((city) => city.name === evt.target.value);
 
     if (!selectedDestination) {
+      this.updateElement({destination: null});
       return;
     }
 
