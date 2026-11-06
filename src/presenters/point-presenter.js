@@ -1,3 +1,4 @@
+import { UpdateType, UserAction } from '../const.js';
 import { remove, render, replace } from '../framework/render.js';
 import FormView from '../views/form-view.js';
 import PointView from '../views/point-view.js';
@@ -45,7 +46,8 @@ export default class PointPresenter {
       offers: this.#offersModel.offers,
       destinations: this.#destinationsModel.destinations,
       onFormSubmit: this.#handleFormSubmit,
-      onRollupClick: this.#handleRollupClick
+      onRollupClick: this.#handleRollupClick,
+      onDeleteClick: this.#handleDeleteClick
     });
 
     if (prevPointComponent === null || prevFormComponent === null) {
@@ -104,11 +106,16 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.POINT,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (update) => {
     this.#replaceFormToPoint();
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.LIST, update);
   };
 
   #handleRollupClick = () => {
@@ -116,4 +123,7 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.LIST, point);
+  };
 }
