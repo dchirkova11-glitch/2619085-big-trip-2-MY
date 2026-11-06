@@ -51,7 +51,7 @@ const createDestinationTemplate = (destination) => {
     : '';
 };
 
-const createFormTemplate = (point, allOffers, destinations) => {
+const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const { basePrice, dateFrom, dateTo, type, offers, destination: destinationId } = point;
   const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
   const destination = destinations.find((city) => city.id === destinationId);
@@ -146,10 +146,12 @@ const createFormTemplate = (point, allOffers, destinations) => {
       >
     </div>
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
-    <button class="event__rollup-btn" type="button">
-      <span class="visually-hidden">Open event</span>
+    <button class="event__reset-btn" type="reset">
+      ${isNewPoint ? 'Cancel' : 'Delete'}
     </button>
+    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`)}
   </header>
   <section class="event__details">
     ${offersTemplate}
@@ -167,6 +169,7 @@ export default class FormView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleDeleteClick = null;
+  #isNewPoint = false;
 
   constructor({
     point = BLANK_POINT,
@@ -174,7 +177,8 @@ export default class FormView extends AbstractStatefulView {
     destinations,
     onFormSubmit,
     onRollupClick,
-    onDeleteClick
+    onDeleteClick,
+    isNewPoint = false
   }) {
     super();
     this._setState(FormView.parsePointToState(point));
@@ -183,6 +187,7 @@ export default class FormView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupClick = onRollupClick;
     this.#handleDeleteClick = onDeleteClick;
+    this.#isNewPoint = isNewPoint;
     this._restoreHandlers();
   }
 
@@ -190,15 +195,18 @@ export default class FormView extends AbstractStatefulView {
     return createFormTemplate(
       this._state,
       this.#offers,
-      this.#destinations
+      this.#destinations,
+      this.#isNewPoint
     );
   }
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#formSubmitHandler);
-    this.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#rollupClickHandler);
+    if(!this.#isNewPoint) {
+      this.element
+        .querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#rollupClickHandler);
+    }
     this.element
       .querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);

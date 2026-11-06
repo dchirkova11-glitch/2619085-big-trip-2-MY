@@ -6,6 +6,7 @@ import TripPresenter from './presenters/trip-presenter.js';
 
 const headerFiltersElement = document.querySelector('.trip-controls__filters');
 const mainEventsElement = document.querySelector('.trip-events');
+const headerElement = document.querySelector('.trip-main');
 
 const pointsModel = new PointsModel();
 pointsModel.init();
@@ -21,6 +22,7 @@ const filterModel = new FilterModel();
 const tripPresenter = new TripPresenter({
   filterContainer: headerFiltersElement,
   tripContainer: mainEventsElement,
+  headerContainer: headerElement,
   pointsModel,
   offersModel,
   destinationsModel,

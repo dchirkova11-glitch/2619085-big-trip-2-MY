@@ -3,9 +3,10 @@ import PointPresenter from './point-presenter.js';
 import { remove, render } from '../framework/render.js';
 import NoPointView from '../views/no-point-view.js';
 import SortView from '../views/sort-view.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { FilterType, SortType, UpdateType, UserAction } from '../const.js';
 import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class ListPresenter {
   #container = null;
@@ -14,12 +15,20 @@ export default class ListPresenter {
   #destinationsModel = null;
   #sortComponent = null;
   #filterModel = null;
-  #listComponent = new ListView();
+  #newPointPresenter = null;
   #noPointComponent = null;
+  #listComponent = new ListView();
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
 
-  constructor({ container, pointsModel, offersModel, destinationsModel, filterModel }) {
+  constructor({
+    container,
+    pointsModel,
+    offersModel,
+    destinationsModel,
+    filterModel,
+    onNewPointDestroy
+  }) {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
@@ -27,6 +36,13 @@ export default class ListPresenter {
     this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#newPointPresenter = new NewPointPresenter({
+      listContainer: this.#listComponent.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
+    });
   }
 
   get points () {
@@ -82,6 +98,12 @@ export default class ListPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
+
   #renderNoPoints() {
     this.#noPointComponent = new NoPointView ({ filterType: this.#filterModel.filter});
     render(this.#noPointComponent, this.#container);
@@ -98,9 +120,9 @@ export default class ListPresenter {
   }
 
   #clearList() {
+    this.#newPointPresenter.destroy();
     this.#clearPointList();
     remove(this.#sortComponent);
-    remove(this.#listComponent);
     remove(this.#noPointComponent);
   }
 
@@ -111,6 +133,9 @@ export default class ListPresenter {
         break;
       case UserAction.DELETE_POINT:
         this.#pointsModel.deletePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
         break;
     }
   };
@@ -133,6 +158,7 @@ export default class ListPresenter {
   };
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -144,5 +170,4 @@ export default class ListPresenter {
     this.#clearPointList();
     this.#renderPoints();
   };
-
 }
