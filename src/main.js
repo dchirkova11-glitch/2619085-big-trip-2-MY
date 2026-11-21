@@ -32,5 +32,7 @@ const tripPresenter = new TripPresenter({
   filterModel
 });
 
-Promise.all([pointsModel.init(), offersModel.init(), destinationsModel.init()])
-  .then(() => tripPresenter.init());
+tripPresenter.init();
+
+Promise.all([offersModel.init(), destinationsModel.init()])
+  .then(() => pointsModel.init());

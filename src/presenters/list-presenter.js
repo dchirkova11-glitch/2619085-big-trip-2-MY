@@ -7,6 +7,7 @@ import { FilterType, SortType, UpdateType, UserAction } from '../const.js';
 import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../views/loading-view.js';
 
 export default class ListPresenter {
   #container = null;
@@ -20,6 +21,8 @@ export default class ListPresenter {
   #listComponent = new ListView();
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   constructor({
     container,
@@ -66,6 +69,11 @@ export default class ListPresenter {
   }
 
   #renderList() {
+    if(this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (this.points.length === 0) {
       this.#renderNoPoints();
       return;
@@ -154,6 +162,12 @@ export default class ListPresenter {
         this.#clearList();
         this.#renderList();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#clearList();
+        this.#renderList();
+        break;
     }
   };
 
@@ -170,4 +184,8 @@ export default class ListPresenter {
     this.#clearPointList();
     this.#renderPoints();
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
 }
