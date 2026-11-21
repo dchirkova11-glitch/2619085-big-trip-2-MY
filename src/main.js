@@ -35,4 +35,5 @@ const tripPresenter = new TripPresenter({
 tripPresenter.init();
 
 Promise.all([offersModel.init(), destinationsModel.init()])
-  .then(() => pointsModel.init());
+  .then(() => pointsModel.init())
+  .finally(() => tripPresenter.renderNewPointButton());
