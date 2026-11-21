@@ -1,21 +1,39 @@
+import { UpdateType } from '../const.js';
 import Observable from '../framework/observable.js';
-import { pointsMock } from '../mock/points-mock.js';
 import { updateItem } from '../utils/common.js';
 
 export default class PointsModel extends Observable {
-  #points = null;
+  #points = [];
+  #pointsApiService = null;
 
-  init() {
-    this.#points = [...pointsMock];
+  constructor({pointsApiService}) {
+    super();
+    this.#pointsApiService = pointsApiService;
   }
 
   get points() {
     return this.#points;
   }
 
-  updatePoint(updateType, update) {
-    this.#points = updateItem(this.#points, update);
-    this._notify(updateType, update);
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+    } catch(err) {
+      this.#points = [];
+    }
+    this._notify(UpdateType.INIT);
+  }
+
+  async updatePoint(updateType, update) {
+    try {
+      const response = await this.#pointsApiService.updatePoint(update);
+      const updatedPoint = this.#adaptToClient(response);
+      this.#points = updateItem(this.#points, updatedPoint);
+      this._notify(updateType, updatedPoint);
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
   }
 
   addPoint(updateType, update) {
@@ -26,5 +44,22 @@ export default class PointsModel extends Observable {
   deletePoint(updateType, update) {
     this.#points = this.#points.filter((point) => point.id !== update.id);
     this._notify(updateType);
+  }
+
+  #adaptToClient(point) {
+    const adaptedPoint = {
+      ...point,
+      basePrice: point['base_price'],
+      dateFrom: point['date_from'],
+      dateTo: point['date_to'],
+      isFavorite: point['is_favorite']
+    };
+
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
   }
 }

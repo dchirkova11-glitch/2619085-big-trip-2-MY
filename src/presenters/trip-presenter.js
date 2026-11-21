@@ -48,7 +48,12 @@ export default class TripPresenter {
       filterModel: this.#filterModel
     });
     filterPresenter.init();
+  }
 
+  renderNewPointButton() {
+    if(this.#offersModel.offers.length === 0 || this.#destinationsModel.destinations.length === 0) {
+      return;
+    }
     this.#newPointButtonComponent = new NewPointButtonView({
       onClick: this.#handleNewPointButtonClick
     });

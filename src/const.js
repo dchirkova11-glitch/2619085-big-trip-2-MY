@@ -14,13 +14,13 @@ export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
-  PAST: 'past',
+  PAST: 'past'
 };
 
 export const SortType = {
   DAY: 'day',
   TIME: 'time',
-  PRICE: 'price',
+  PRICE: 'price'
 };
 
 export const UserAction = {
@@ -32,5 +32,6 @@ export const UserAction = {
 export const UpdateType = {
   POINT: 'POINT',
   LIST: 'LIST',
-  ALL: 'ALL'
+  ALL: 'ALL',
+  INIT: 'INIT'
 };
