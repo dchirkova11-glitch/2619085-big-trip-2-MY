@@ -15,13 +15,10 @@ const headerElement = document.querySelector('.trip-main');
 const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel({pointsApiService});
-pointsModel.init();
 
-const offersModel = new OffersModel();
-offersModel.init();
+const offersModel = new OffersModel({pointsApiService});
 
-const destinationsModel = new DestinationsModel();
-destinationsModel.init();
+const destinationsModel = new DestinationsModel({pointsApiService});
 
 const filterModel = new FilterModel();
 
@@ -35,4 +32,5 @@ const tripPresenter = new TripPresenter({
   filterModel
 });
 
-tripPresenter.init();
+Promise.all([pointsModel.init(), offersModel.init(), destinationsModel.init()])
+  .then(() => tripPresenter.init());
