@@ -4,13 +4,20 @@ import { updateItem } from '../utils/common.js';
 
 export default class PointsModel extends Observable {
   #points = null;
+  #pointsApiService = null;
 
-  init() {
-    this.#points = [...pointsMock];
+  constructor({pointsApiService}) {
+    super();
+    this.#pointsApiService = pointsApiService;
+    this.#pointsApiService.points.then((points) => console.log(points));
   }
 
   get points() {
     return this.#points;
+  }
+
+  init() {
+    this.#points = [...pointsMock];
   }
 
   updatePoint(updateType, update) {

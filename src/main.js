@@ -12,7 +12,9 @@ const headerFiltersElement = document.querySelector('.trip-controls__filters');
 const mainEventsElement = document.querySelector('.trip-events');
 const headerElement = document.querySelector('.trip-main');
 
-const pointsModel = new PointsModel();
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
+
+const pointsModel = new PointsModel({pointsApiService});
 pointsModel.init();
 
 const offersModel = new OffersModel();
@@ -32,8 +34,5 @@ const tripPresenter = new TripPresenter({
   destinationsModel,
   filterModel
 });
-
-const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
-pointsApiService.points.then((points) => console.log(points));
 
 tripPresenter.init();
