@@ -61,7 +61,7 @@ export default class NewPointPresenter {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.LIST,
-      {id: crypto.randomUUID(), ...point}
+      point
     );
     this.destroy();
   };

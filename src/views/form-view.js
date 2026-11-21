@@ -5,9 +5,10 @@ import { BLANK_POINT, POINT_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatFormDate } from '../utils/point.js';
 import { capitalize } from '../utils/common.js';
+import dayjs from 'dayjs';
 
 
-const createOffersTemplate = (offers, selectedOffers) => (
+const createOffersTemplate = (offers, selectedOffers, isDisabled) => (
   offers.map((offer) => {
     const isChecked = selectedOffers.includes(offer.id) ? 'checked' : '';
     return (`
@@ -17,6 +18,7 @@ const createOffersTemplate = (offers, selectedOffers) => (
           type="checkbox" 
           name="event-offer-${offer.id}" 
           ${isChecked}
+          ${isDisabled ? 'disabled' : ''}
           data-offer-id="${offer.id}"
         >
         <label class="event__offer-label" for="event-offer-${offer.id}">
@@ -54,7 +56,16 @@ const createDestinationTemplate = (destination) => {
 };
 
 const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
-  const { basePrice, dateFrom, dateTo, type, offers, destination: destinationId } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    type,
+    offers,
+    destination: destinationId,
+    isDisabled,
+    isSaving,
+    isDeleting } = point;
   const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
   const destination = destinations.find((city) => city.id === destinationId);
 
@@ -62,7 +73,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
     ? (`<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-             ${createOffersTemplate(typeOffers, offers)}
+             ${createOffersTemplate(typeOffers, offers, isDisabled)}
           </div>
         </section>`)
     : '';
@@ -75,6 +86,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
     : '';
   const dateTimeStart = formatFormDate(dateFrom);
   const dateTimeEnd = formatFormDate(dateTo);
+  const deleteButtonText = isDeleting ? 'Deleting...' : 'Delete';
   return (`
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -89,6 +101,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
       </label>
       <input class="event__type-toggle  visually-hidden" 
       id="event-type-toggle-1" type="checkbox"
+      ${isDisabled ? 'disabled' : ''}
       >
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -119,6 +132,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         name="event-destination" 
         value="${he.encode(destination ? destination.name : '')}" 
         list="destination-list-1"
+        ${isDisabled ? 'disabled' : ''}
       >
       <datalist id="destination-list-1">
         ${destinations.map((city) => `<option value="${city.name}"></option>`).join('')}
@@ -131,6 +145,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         type="text" 
         name="event-start-time" 
         value="${dateTimeStart}"
+        ${isDisabled ? 'disabled' : ''}
       >
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -139,6 +154,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         type="text" 
         name="event-end-time" 
         value="${dateTimeEnd}"
+        ${isDisabled ? 'disabled' : ''}
       >
     </div>
     <div class="event__field-group  event__field-group--price">
@@ -151,13 +167,17 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         type="text" 
         name="event-price" 
         value="${he.encode(String(basePrice))}"
+        ${isDisabled ? 'disabled' : ''}
       >
     </div>
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">
-      ${isNewPoint ? 'Cancel' : 'Delete'}
+    <button class="event__save-btn  btn  btn--blue" type="submit" 
+      ${isDisabled ? 'disabled' : ''}>
+      ${isSaving ? 'Saving...' : 'Save'}
     </button>
-    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button">
+    <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+      ${isNewPoint ? 'Cancel' : deleteButtonText}
+    </button>
+    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
       <span class="visually-hidden">Open event</span>
     </button>`)}
   </header>
@@ -240,9 +260,11 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    const isDateToAfterDateFrom = dayjs(this._state.dateTo).isAfter(this._state.dateFrom);
     if(!this._state.destination
       || !this._state.dateFrom
       || !this._state.dateTo
+      || !isDateToAfterDateFrom
       || this._state.basePrice <= 0) {
       return;
     }
@@ -299,11 +321,20 @@ export default class FormView extends AbstractStatefulView {
   };
 
   static parsePointToState(point) {
-    return {...point};
+    return {
+      ...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    };
   }
 
   static parseStateToPoint(state) {
-    return {...state};
+    const point = {...state};
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+    return point;
   }
 
   #setDatepickers() {
