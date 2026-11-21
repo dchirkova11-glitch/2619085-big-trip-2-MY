@@ -46,6 +46,23 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#formComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => this.#formComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    });
+
+    this.#formComponent.shake(resetFormState);
+  }
+
   #handleCancelClick = () => {
     this.destroy();
   };
@@ -61,8 +78,7 @@ export default class NewPointPresenter {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.LIST,
-      {id: crypto.randomUUID(), ...point}
+      point
     );
-    this.destroy();
   };
 }
