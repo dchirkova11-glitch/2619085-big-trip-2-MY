@@ -46,6 +46,13 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#formComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   #handleCancelClick = () => {
     this.destroy();
   };
@@ -63,6 +70,5 @@ export default class NewPointPresenter {
       UpdateType.LIST,
       point
     );
-    this.destroy();
   };
 }
