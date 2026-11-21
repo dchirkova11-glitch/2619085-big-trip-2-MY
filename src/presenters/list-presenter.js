@@ -8,6 +8,12 @@ import { sortPointByDay, sortPointByPrice, sortPointByTime } from '../utils/poin
 import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../views/loading-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
 
 export default class ListPresenter {
   #container = null;
@@ -23,6 +29,10 @@ export default class ListPresenter {
   #currentSortType = SortType.DAY;
   #loadingComponent = new LoadingView();
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({
     container,
@@ -135,6 +145,7 @@ export default class ListPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_POINT:
         this.#newPointPresenter.setSaving();
@@ -161,6 +172,7 @@ export default class ListPresenter {
         }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
