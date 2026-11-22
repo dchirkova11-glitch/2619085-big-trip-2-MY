@@ -45,8 +45,8 @@ const createDestinationTemplate = (destination) => {
     ? `<div class="event__photos-container">
          <div class="event__photos-tape">
            ${pictures.map((picture) => `<img class="event__photo" 
-            src = "${he.encode(picture.src)}" 
-            alt = "${he.encode(picture.description)}">`).join('')}
+            src="${he.encode(picture.src)}" 
+            alt="${he.encode(picture.description)}">`).join('')}
          </div>
        </div>`
     : '';
@@ -59,6 +59,27 @@ const createDestinationTemplate = (destination) => {
        </section>`)
     : '';
 };
+
+const createTypeListTemplate = (currentType) => (`
+  <div class="event__type-list">
+     <fieldset class="event__type-group">
+        <legend class="visually-hidden">Event type</legend>
+          ${POINT_TYPES.map((pointType) => (`
+          <div class="event__type-item">
+             <input 
+              id="event-type-${pointType}-1" 
+              class="event__type-input  visually-hidden" 
+              type="radio" 
+              name="event-type" 
+              value="${pointType}" ${pointType === currentType ? 'checked' : ''}
+              >
+              <label class="event__type-label  event__type-label--${pointType}" 
+              for="event-type-${pointType}-1">${capitalize(pointType)}</label>
+          </div>
+          `)).join('')}
+      </fieldset>
+  </div>
+  `);
 
 const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const {
@@ -108,24 +129,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
       id="event-type-toggle-1" type="checkbox"
       ${isDisabled ? 'disabled' : ''}
       >
-      <div class="event__type-list">
-        <fieldset class="event__type-group">
-          <legend class="visually-hidden">Event type</legend>
-          ${POINT_TYPES.map((pointType) => `
-            <div class="event__type-item">
-              <input 
-                id="event-type-${pointType}-1" 
-                class="event__type-input  visually-hidden" 
-                type="radio" 
-                name="event-type" 
-                value="${pointType}" ${pointType === type ? 'checked' : ''}
-              >
-              <label class="event__type-label  event__type-label--${pointType}" 
-              for="event-type-${pointType}-1">${capitalize(pointType)}</label>
-            </div>
-          `).join('')}
-        </fieldset>
-      </div>
+      ${createTypeListTemplate(type)}
     </div>
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">

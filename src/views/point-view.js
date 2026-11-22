@@ -2,7 +2,6 @@ import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatPointDate, formatPointTime, getPointDuration } from '../utils/point.js';
 
-
 const createTemplate = (point, destination, typeOffers) => {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
 
