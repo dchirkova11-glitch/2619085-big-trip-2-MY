@@ -103,14 +103,8 @@ export default class PointPresenter {
       this.#pointComponent.shake();
       return;
     }
-
-    const resetFormState = () => this.#formComponent.updateElement({
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false
-    });
-
-    this.#formComponent.shake(resetFormState);
+    this.#formComponent.updateElement({ isDisabled: false, isSaving: false, isDeleting: false });
+    this.#formComponent.shake();
   }
 
   #replacePointToForm() {

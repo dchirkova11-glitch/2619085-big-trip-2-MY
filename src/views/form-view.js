@@ -114,6 +114,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const dateTimeEnd = formatFormDate(dateTo);
   const deleteButtonText = isDeleting ? 'Deleting...' : 'Delete';
   return (`
+  <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
@@ -183,15 +184,16 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
       ${isDisabled ? 'disabled' : ''}>
       ${isSaving ? 'Saving...' : 'Save'}
     </button>
-    <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+    <button class="event__reset-btn" type="reset">
       ${isNewPoint ? 'Cancel' : deleteButtonText}
     </button>
-    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>`)}
   </header>
      ${detailsTemplate}
   </form>
+  </li>
       `);
 };
 
@@ -286,7 +288,7 @@ export default class FormView extends AbstractStatefulView {
       {
         ...DATEPICKER_CONFIG,
         defaultDate: this._state.dateFrom,
-        onChange: this.#dateFromChangeHandler,
+        onClose: this.#dateFromChangeHandler,
       }
     );
     this.#datepickerTo = flatpickr(
@@ -294,7 +296,7 @@ export default class FormView extends AbstractStatefulView {
       {
         ...DATEPICKER_CONFIG,
         defaultDate: this._state.dateTo,
-        onChange: this.#dateToChangeHandler,
+        onClose: this.#dateToChangeHandler,
         minDate: this._state.dateFrom,
       }
     );
@@ -315,6 +317,9 @@ export default class FormView extends AbstractStatefulView {
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
+    if (this._state.isDisabled) {
+      return;
+    }
     this.#handleRollupClick();
   };
 
@@ -359,6 +364,9 @@ export default class FormView extends AbstractStatefulView {
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
+    if(this._state.isDisabled) {
+      return;
+    }
     this.#handleDeleteClick(FormView.parseStateToPoint(this._state));
   };
 
