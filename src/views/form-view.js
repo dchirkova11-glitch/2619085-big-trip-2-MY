@@ -7,6 +7,11 @@ import { formatFormDate } from '../utils/point.js';
 import { capitalize } from '../utils/common.js';
 import dayjs from 'dayjs';
 
+const DATEPICKER_CONFIG = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  'time_24hr': true,
+};
 
 const createOffersTemplate = (offers, selectedOffers, isDisabled) => (
   offers.map((offer) => {
@@ -69,7 +74,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
   const destination = destinations.find((city) => city.id === destinationId);
 
-  const offersTemplate = typeOffers && typeOffers.length > 0
+  const offersTemplate = typeOffers.length > 0
     ? (`<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
@@ -275,9 +280,7 @@ export default class FormView extends AbstractStatefulView {
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
-        enableTime: true,
-        'time_24hr': true,
+        ...DATEPICKER_CONFIG,
         defaultDate: this._state.dateFrom,
         onChange: this.#dateFromChangeHandler,
       }
@@ -285,9 +288,7 @@ export default class FormView extends AbstractStatefulView {
     this.#datepickerTo = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
-        enableTime: true,
-        'time_24hr': true,
+        ...DATEPICKER_CONFIG,
         defaultDate: this._state.dateTo,
         onChange: this.#dateToChangeHandler,
         minDate: this._state.dateFrom,
