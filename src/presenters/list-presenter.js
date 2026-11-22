@@ -9,6 +9,7 @@ import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../views/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import LoadErrorView from '../views/load-error-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -28,6 +29,8 @@ export default class ListPresenter {
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #loadingComponent = new LoadingView();
+  #loadErrorComponent = new LoadErrorView();
+  #isLoadError = false;
   #isLoading = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -84,7 +87,12 @@ export default class ListPresenter {
       return;
     }
 
-    if (this.points.length === 0) {
+    if(this.#isLoadError) {
+      this.#renderLoadError();
+      return;
+    }
+
+    if(this.points.length === 0) {
       this.#renderNoPoints();
       return;
     }
@@ -192,6 +200,9 @@ export default class ListPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#isLoadError = data.isError
+        || this.#offersModel.offers.length === 0
+        || this.#destinationsModel.destinations.length === 0;
         this.#clearList();
         this.#renderList();
         break;
@@ -214,5 +225,9 @@ export default class ListPresenter {
 
   #renderLoading() {
     render(this.#loadingComponent, this.#container);
+  }
+
+  #renderLoadError() {
+    render(this.#loadErrorComponent, this.#container);
   }
 }
