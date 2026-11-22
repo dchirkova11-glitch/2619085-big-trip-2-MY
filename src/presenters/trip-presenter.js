@@ -71,10 +71,10 @@ export default class TripPresenter {
 
   #handleNewPointButtonClick = () => {
     this.#listPresenter.createPoint();
-    this.#newPointButtonComponent.element.disabled = true;
+    this.#newPointButtonComponent.disable();
   };
 
   #handleNewPointFormClose = () => {
-    this.#newPointButtonComponent.element.disabled = false;
+    this.#newPointButtonComponent.enable();
   };
 }
