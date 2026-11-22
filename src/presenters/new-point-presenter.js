@@ -18,7 +18,6 @@ export default class NewPointPresenter {
     this.#handleDestroy = onDestroy;
   }
 
-
   init() {
     if (this.#formComponent !== null) {
       return;

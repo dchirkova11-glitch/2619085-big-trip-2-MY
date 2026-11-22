@@ -2,6 +2,7 @@ import { render } from '../framework/render.js';
 import NewPointButtonView from '../views/new-point-button-view.js';
 import FilterPresenter from './filter-presenter.js';
 import ListPresenter from './list-presenter.js';
+import TripInfoPresenter from './trip-info-presenter.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -48,6 +49,14 @@ export default class TripPresenter {
       filterModel: this.#filterModel
     });
     filterPresenter.init();
+
+    const tripInfoPresenter = new TripInfoPresenter({
+      container: this.#headerContainer,
+      pointsModel: this.#pointsModel,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel
+    });
+    tripInfoPresenter.init();
   }
 
   renderNewPointButton() {
@@ -62,10 +71,10 @@ export default class TripPresenter {
 
   #handleNewPointButtonClick = () => {
     this.#listPresenter.createPoint();
-    this.#newPointButtonComponent.element.disabled = true;
+    this.#newPointButtonComponent.disable();
   };
 
   #handleNewPointFormClose = () => {
-    this.#newPointButtonComponent.element.disabled = false;
+    this.#newPointButtonComponent.enable();
   };
 }

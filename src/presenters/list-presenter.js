@@ -9,6 +9,7 @@ import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../views/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import LoadErrorView from '../views/load-error-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -28,6 +29,8 @@ export default class ListPresenter {
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #loadingComponent = new LoadingView();
+  #loadErrorComponent = new LoadErrorView();
+  #isLoadError = false;
   #isLoading = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -78,18 +81,38 @@ export default class ListPresenter {
     this.#renderList();
   }
 
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
+
   #renderList() {
     if(this.#isLoading) {
       this.#renderLoading();
       return;
     }
 
-    if (this.points.length === 0) {
+    if(this.#isLoadError) {
+      this.#renderLoadError();
+      return;
+    }
+
+    if(this.points.length === 0) {
+      render(this.#listComponent, this.#container);
       this.#renderNoPoints();
       return;
     }
     this.#renderSort();
     this.#renderPointList();
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
+
+  #renderLoadError() {
+    render(this.#loadErrorComponent, this.#container);
   }
 
   #renderSort() {
@@ -114,12 +137,6 @@ export default class ListPresenter {
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
-  }
-
-  createPoint() {
-    this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
-    this.#newPointPresenter.init();
   }
 
   #renderNoPoints() {
@@ -192,6 +209,9 @@ export default class ListPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#isLoadError = data.isError
+        || this.#offersModel.offers.length === 0
+        || this.#destinationsModel.destinations.length === 0;
         this.#clearList();
         this.#renderList();
         break;
@@ -211,8 +231,4 @@ export default class ListPresenter {
     this.#clearPointList();
     this.#renderPoints();
   };
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#container);
-  }
 }
