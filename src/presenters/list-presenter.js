@@ -25,6 +25,7 @@ export default class ListPresenter {
   #filterModel = null;
   #newPointPresenter = null;
   #noPointComponent = null;
+  #handleNewPointDestroy = null;
   #listComponent = new ListView();
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
@@ -50,6 +51,7 @@ export default class ListPresenter {
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
+    this.#handleNewPointDestroy = onNewPointDestroy;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#newPointPresenter = new NewPointPresenter({
@@ -57,7 +59,7 @@ export default class ListPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: this.#handleNewPointFormClose
     });
   }
 
@@ -85,6 +87,7 @@ export default class ListPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
+    remove(this.#noPointComponent);
   }
 
   #renderList() {
@@ -221,6 +224,13 @@ export default class ListPresenter {
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleNewPointFormClose = () => {
+    this.#handleNewPointDestroy();
+    if(this.points.length === 0) {
+      this.#renderNoPoints();
+    }
   };
 
   #handleSortTypeChange = (sortType) => {
