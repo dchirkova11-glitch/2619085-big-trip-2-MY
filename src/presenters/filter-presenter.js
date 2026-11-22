@@ -46,7 +46,5 @@ export default class FilterPresenter {
     this.#filterModel.setFilter(UpdateType.ALL, filterType);
   };
 
-  #handleModelEvent = () => {
-    this.init();
-  };
+  #handleModelEvent = () => this.init();
 }
