@@ -81,6 +81,12 @@ export default class ListPresenter {
     this.#renderList();
   }
 
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
+
   #renderList() {
     if(this.#isLoading) {
       this.#renderLoading();
@@ -99,6 +105,14 @@ export default class ListPresenter {
     }
     this.#renderSort();
     this.#renderPointList();
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
+
+  #renderLoadError() {
+    render(this.#loadErrorComponent, this.#container);
   }
 
   #renderSort() {
@@ -123,12 +137,6 @@ export default class ListPresenter {
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
-  }
-
-  createPoint() {
-    this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.ALL, FilterType.EVERYTHING);
-    this.#newPointPresenter.init();
   }
 
   #renderNoPoints() {
@@ -223,12 +231,4 @@ export default class ListPresenter {
     this.#clearPointList();
     this.#renderPoints();
   };
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#container);
-  }
-
-  #renderLoadError() {
-    render(this.#loadErrorComponent, this.#container);
-  }
 }
