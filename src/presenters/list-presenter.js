@@ -93,6 +93,7 @@ export default class ListPresenter {
     }
 
     if(this.points.length === 0) {
+      render(this.#listComponent, this.#container);
       this.#renderNoPoints();
       return;
     }

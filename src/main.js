@@ -6,7 +6,7 @@ import TripPresenter from './presenters/trip-presenter.js';
 import PointsApiService from './points-api-service.js';
 
 const AUTHORIZATION = 'Basic 1q2w3e4r5t6y7u8';
-const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip1';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const headerFiltersElement = document.querySelector('.trip-controls__filters');
 const mainEventsElement = document.querySelector('.trip-events');
