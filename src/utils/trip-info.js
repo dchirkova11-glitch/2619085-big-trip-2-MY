@@ -1,3 +1,4 @@
+import he from 'he';
 import dayjs from 'dayjs';
 
 const MAX_CITIES_COUNT = 3;
@@ -5,7 +6,7 @@ const TRIP_DATE_FORMAT = 'D MMM';
 
 export const getTripTitle = (points, destinations) => {
   const cityNames = points.map((point) =>
-    destinations.find((city) => city.id === point.destination).name
+    he.encode(destinations.find((city) => city.id === point.destination).name)
   );
 
   if(cityNames.length > MAX_CITIES_COUNT) {

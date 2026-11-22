@@ -22,7 +22,7 @@ const createOffersTemplate = (offers, selectedOffers, isDisabled) => (
           data-offer-id="${offer.id}"
         >
         <label class="event__offer-label" for="event-offer-${offer.id}">
-        <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;
+        <span class="event__offer-title">${he.encode(offer.title)}</span>&plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>
@@ -39,9 +39,9 @@ const createDestinationTemplate = (destination) => {
   const picturesTemplate = pictures.length > 0
     ? `<div class="event__photos-container">
          <div class="event__photos-tape">
-           ${pictures.map((pic) => `<img class="event__photo" 
-            src = "${pic.src}" 
-            alt = "${pic.description}">`).join('')}
+           ${pictures.map((picture) => `<img class="event__photo" 
+            src = "${he.encode(picture.src)}" 
+            alt = "${he.encode(picture.description)}">`).join('')}
          </div>
        </div>`
     : '';
@@ -49,7 +49,7 @@ const createDestinationTemplate = (destination) => {
   return description || pictures.length > 0
     ? (`<section class="event__section  event__section--destination">
          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-         <p class="event__destination-description">${description}</p>
+         <p class="event__destination-description">${he.encode(description)}</p>
          ${picturesTemplate}
        </section>`)
     : '';
@@ -135,7 +135,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
         ${isDisabled ? 'disabled' : ''}
       >
       <datalist id="destination-list-1">
-        ${destinations.map((city) => `<option value="${city.name}"></option>`).join('')}
+        ${destinations.map((city) => `<option value="${he.encode(city.name)}"></option>`).join('')}
       </datalist>
     </div>
     <div class="event__field-group  event__field-group--time">
