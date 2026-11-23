@@ -19,20 +19,31 @@ const createOffersTemplate = (offers, selectedOffers, isDisabled) => (
     return (`
       <div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" 
-          id="event-offer-${offer.id}" 
+          id="event-offer-${he.encode(offer.id)}" 
           type="checkbox" 
-          name="event-offer-${offer.id}" 
+          name="event-offer-${he.encode(offer.id)}" 
           ${isChecked}
           ${isDisabled ? 'disabled' : ''}
-          data-offer-id="${offer.id}"
+          data-offer-id="${he.encode(offer.id)}"
         >
-        <label class="event__offer-label" for="event-offer-${offer.id}">
+        <label class="event__offer-label" for="event-offer-${he.encode(offer.id)}">
         <span class="event__offer-title">${he.encode(offer.title)}</span>&plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
+        <span class="event__offer-price">${he.encode(String(offer.price))}</span>
         </label>
       </div>
     `);
   }).join('')
+);
+
+const createOffersSectionTemplate = (typeOffers, offers, isDisabled) => (
+  typeOffers.length > 0
+    ? (`<section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <div class="event__available-offers">
+             ${createOffersTemplate(typeOffers, offers, isDisabled)}
+          </div>
+        </section>`)
+    : ''
 );
 
 const createDestinationTemplate = (destination) => {
@@ -81,6 +92,97 @@ const createTypeListTemplate = (currentType) => (`
   </div>
   `);
 
+const createTypeTemplate = (type, isDisabled) => (`
+    <div class="event__type-wrapper">
+      <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <span class="visually-hidden">Choose event type</span>
+        <img class="event__type-icon" 
+          width="17" height="17" 
+          src="img/icons/${he.encode(type)}.png" 
+          alt="Event type icon"
+        >
+      </label>
+      <input class="event__type-toggle  visually-hidden" 
+      id="event-type-toggle-1" type="checkbox"
+      ${isDisabled ? 'disabled' : ''}
+      >
+      ${createTypeListTemplate(type)}
+    </div>
+    `);
+
+const createDestinationFieldTemplate = (type, destination, destinations, isDisabled) => (`
+      <div class="event__field-group  event__field-group--destination">
+      <label class="event__label  event__type-output" for="event-destination-1">
+        ${he.encode(type)}
+      </label>
+      <input class="event__input  event__input--destination" 
+        id="event-destination-1" 
+        type="text" 
+        name="event-destination" 
+        value="${he.encode(destination ? destination.name : '')}" 
+        list="destination-list-1"
+        ${isDisabled ? 'disabled' : ''}
+      >
+      <datalist id="destination-list-1">
+        ${destinations.map((city) => `<option value="${he.encode(city.name)}"></option>`).join('')}
+      </datalist>
+    </div>
+      `);
+
+const createDatesTemplate = (dateFrom, dateTo, isDisabled) => (`
+        <div class="event__field-group  event__field-group--time">
+      <label class="visually-hidden" for="event-start-time-1">From</label>
+      <input class="event__input  event__input--time" 
+        id="event-start-time-1" 
+        type="text" 
+        name="event-start-time" 
+        value="${formatFormDate(dateFrom)}"
+        ${isDisabled ? 'disabled' : ''}
+      >
+      &mdash;
+      <label class="visually-hidden" for="event-end-time-1">To</label>
+      <input class="event__input  event__input--time" 
+        id="event-end-time-1" 
+        type="text" 
+        name="event-end-time" 
+        value="${formatFormDate(dateTo)}"
+        ${isDisabled ? 'disabled' : ''}
+      >
+    </div>
+        `);
+
+const createPriceTemplate = (basePrice, isDisabled) => (`
+  <div class="event__field-group  event__field-group--price">
+      <label class="event__label" for="event-price-1">
+        <span class="visually-hidden">Price</span>
+        &euro;
+      </label>
+      <input class="event__input  event__input--price" 
+        id="event-price-1" 
+        type="text" 
+        name="event-price" 
+        value="${he.encode(String(basePrice))}"
+        ${isDisabled ? 'disabled' : ''}
+      >
+    </div>
+  `);
+
+const createButtonsTemplate = (isNewPoint, isDisabled, isSaving, isDeleting) => {
+  const deleteButtonText = isDeleting ? 'Deleting...' : 'Delete';
+  return (`
+  <button class="event__save-btn  btn  btn--blue" type="submit" 
+      ${isDisabled ? 'disabled' : ''}>
+      ${isSaving ? 'Saving...' : 'Save'}
+    </button>
+    <button class="event__reset-btn" type="reset">
+      ${isNewPoint ? 'Cancel' : deleteButtonText}
+    </button>
+    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`)}
+  `);
+};
+
 const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const {
     basePrice,
@@ -95,14 +197,7 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
   const typeOffers = allOffers.find((offerGroup) => offerGroup.type === type).offers;
   const destination = destinations.find((city) => city.id === destinationId);
 
-  const offersTemplate = typeOffers.length > 0
-    ? (`<section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          <div class="event__available-offers">
-             ${createOffersTemplate(typeOffers, offers, isDisabled)}
-          </div>
-        </section>`)
-    : '';
+  const offersTemplate = createOffersSectionTemplate(typeOffers, offers, isDisabled);
   const destinationTemplate = createDestinationTemplate(destination);
   const detailsTemplate = offersTemplate || destinationTemplate
     ? (`<section class="event__details">
@@ -110,86 +205,16 @@ const createFormTemplate = (point, allOffers, destinations, isNewPoint) => {
           ${destinationTemplate}
         </section>`)
     : '';
-  const dateTimeStart = formatFormDate(dateFrom);
-  const dateTimeEnd = formatFormDate(dateTo);
-  const deleteButtonText = isDeleting ? 'Deleting...' : 'Delete';
+
   return (`
   <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
-    <div class="event__type-wrapper">
-      <label class="event__type  event__type-btn" for="event-type-toggle-1">
-        <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" 
-          width="17" height="17" 
-          src="img/icons/${type}.png" 
-          alt="Event type icon"
-        >
-      </label>
-      <input class="event__type-toggle  visually-hidden" 
-      id="event-type-toggle-1" type="checkbox"
-      ${isDisabled ? 'disabled' : ''}
-      >
-      ${createTypeListTemplate(type)}
-    </div>
-    <div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-      </label>
-      <input class="event__input  event__input--destination" 
-        id="event-destination-1" 
-        type="text" 
-        name="event-destination" 
-        value="${he.encode(destination ? destination.name : '')}" 
-        list="destination-list-1"
-        ${isDisabled ? 'disabled' : ''}
-      >
-      <datalist id="destination-list-1">
-        ${destinations.map((city) => `<option value="${he.encode(city.name)}"></option>`).join('')}
-      </datalist>
-    </div>
-    <div class="event__field-group  event__field-group--time">
-      <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" 
-        id="event-start-time-1" 
-        type="text" 
-        name="event-start-time" 
-        value="${dateTimeStart}"
-        ${isDisabled ? 'disabled' : ''}
-      >
-      &mdash;
-      <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" 
-        id="event-end-time-1" 
-        type="text" 
-        name="event-end-time" 
-        value="${dateTimeEnd}"
-        ${isDisabled ? 'disabled' : ''}
-      >
-    </div>
-    <div class="event__field-group  event__field-group--price">
-      <label class="event__label" for="event-price-1">
-        <span class="visually-hidden">Price</span>
-        &euro;
-      </label>
-      <input class="event__input  event__input--price" 
-        id="event-price-1" 
-        type="text" 
-        name="event-price" 
-        value="${he.encode(String(basePrice))}"
-        ${isDisabled ? 'disabled' : ''}
-      >
-    </div>
-    <button class="event__save-btn  btn  btn--blue" type="submit" 
-      ${isDisabled ? 'disabled' : ''}>
-      ${isSaving ? 'Saving...' : 'Save'}
-    </button>
-    <button class="event__reset-btn" type="reset">
-      ${isNewPoint ? 'Cancel' : deleteButtonText}
-    </button>
-    ${isNewPoint ? '' : (`<button class="event__rollup-btn" type="button">
-      <span class="visually-hidden">Open event</span>
-    </button>`)}
+    ${createTypeTemplate(type, isDisabled)}
+    ${createDestinationFieldTemplate(type, destination, destinations, isDisabled)}
+    ${createDatesTemplate(dateFrom, dateTo, isDisabled)}
+    ${createPriceTemplate(basePrice, isDisabled)}
+    ${createButtonsTemplate(isNewPoint, isDisabled, isSaving, isDeleting)}
   </header>
      ${detailsTemplate}
   </form>

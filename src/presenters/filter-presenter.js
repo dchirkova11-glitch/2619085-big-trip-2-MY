@@ -23,7 +23,7 @@ export default class FilterPresenter {
       type,
       count: filterPoints(points).length
     }));
-    const prevFilterComponent = this.#filterComponent;
+    const previousFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new FilterView({
       filters,
@@ -31,12 +31,12 @@ export default class FilterPresenter {
       onFilterTypeChange: this.#handleFilterTypeChange
     });
 
-    if(prevFilterComponent === null) {
+    if(previousFilterComponent === null) {
       render(this.#filterComponent, this.#container);
       return;
     }
-    replace(this.#filterComponent, prevFilterComponent);
-    remove(prevFilterComponent);
+    replace(this.#filterComponent, previousFilterComponent);
+    remove(previousFilterComponent);
   }
 
   #handleFilterTypeChange = (filterType) => {

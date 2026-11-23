@@ -31,8 +31,8 @@ export default class PointPresenter {
     this.#point = point;
     const destination = this.#destinationsModel.getById(this.#point.destination);
     const typeOffers = this.#offersModel.getByType(this.#point.type);
-    const prevPointComponent = this.#pointComponent;
-    const prevFormComponent = this.#formComponent;
+    const previousPointComponent = this.#pointComponent;
+    const previousFormComponent = this.#formComponent;
     this.#pointComponent = new PointView({
       point: this.#point,
       destination,
@@ -50,21 +50,21 @@ export default class PointPresenter {
       onDeleteClick: this.#handleDeleteClick
     });
 
-    if (prevPointComponent === null || prevFormComponent === null) {
+    if (previousPointComponent === null || previousFormComponent === null) {
       render(this.#pointComponent, this.#listContainer);
       return;
     }
 
     if (this.#mode === Mode.DEFAULT) {
-      replace(this.#pointComponent, prevPointComponent);
+      replace(this.#pointComponent, previousPointComponent);
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#formComponent, prevFormComponent);
+      replace(this.#formComponent, previousFormComponent);
     }
 
-    remove(prevPointComponent);
-    remove(prevFormComponent);
+    remove(previousPointComponent);
+    remove(previousFormComponent);
   }
 
   destroy() {

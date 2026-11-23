@@ -21,10 +21,10 @@ export default class TripInfoPresenter {
 
   init() {
     const points = [...this.#pointsModel.points].sort(sortPointByDay);
-    const prevTripInfoComponent = this.#tripInfoComponent;
+    const previousTripInfoComponent = this.#tripInfoComponent;
 
     if(points.length === 0) {
-      remove(prevTripInfoComponent);
+      remove(previousTripInfoComponent);
       this.#tripInfoComponent = null;
       return;
     }
@@ -35,12 +35,12 @@ export default class TripInfoPresenter {
       cost: getTripCost(points, this.#offersModel.offers)
     });
 
-    if(prevTripInfoComponent === null) {
+    if(previousTripInfoComponent === null) {
       render(this.#tripInfoComponent, this.#container, RenderPosition.AFTERBEGIN);
       return;
     }
-    replace(this.#tripInfoComponent, prevTripInfoComponent);
-    remove(prevTripInfoComponent);
+    replace(this.#tripInfoComponent, previousTripInfoComponent);
+    remove(previousTripInfoComponent);
   }
 
   #handleModelEvent = () => this.init();
